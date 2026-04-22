@@ -26,6 +26,8 @@ chmod +x scripts/<scriptname>
 ## 📦 Repository Contents
 ```
 lily-pwsh/
+└── docs/
+    └── Install‑AzureModules.ps1 — README.md
 └── examples/
     └── run-interactive.md
 ├── scripts/
