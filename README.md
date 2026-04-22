@@ -1,5 +1,5 @@
 ## lily-pwsh
-## A clean, minimal, zero‑drift PowerShell container built on Ubuntu 24.04.
+**A clean, minimal, zero‑drift PowerShell container built on Ubuntu 24.04.**
 
 lily-pwsh is a sterile, reproducible PowerShell environment designed for people who want a predictable shell without host contamination, leftover apt cache, or the bloat of full Linux installs. It’s intentionally simple: build it, run it, throw it away. The image is the only persistent artifact.
 
