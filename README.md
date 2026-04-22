@@ -128,7 +128,7 @@ You can run this script as often as you want to refresh or update modules withou
 **📘 Full Documentation for Install‑AzureModules.ps1**
 A full, detailed README for the Azure module installer script — including module lists, expected warnings, environment philosophy, and a complete example run — is available here:
 
-👉 [Install‑AzureModules.ps1 — README.md](https://github.com/revpixel/lily-pwsh/blob/main/docs/Install-AzureModules.ps1-README.md)
+👉 [Install‑AzureModules.ps1 — README.md]([https://github.com/revpixel/lily-pwsh/blob/main/docs/Install-AzureModules.ps1-README.md](https://github.com/revpixel/lily-pwsh/blob/main/docs/Install%E2%80%91AzureModules.ps1%20%E2%80%94%20README.md))
 
 This doc covers the why, the how, and the operational model behind the script, including sterile sandboxes, identity‑bound VMs, and deterministic module baselines.
 
