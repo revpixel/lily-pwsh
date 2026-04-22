@@ -134,23 +134,21 @@ If you store your bootstrap script somewhere else inside ```/mnt/data```, update
 ## 🧪 Philosophy: A Sterile, Ephemeral Lab
 This project exists because I wanted a PowerShell environment that behaves like a clean lab:
 
-    No drift — every container starts identical
-    No contamination — nothing leaks into the host
-    No bloat — only the required dependencies
-    No surprises — deterministic builds
-    No Desktop/WSL drama — pure Docker on a real Linux host
+- No drift — every container starts identical
+- No contamination — nothing leaks into the host
+- No bloat — only the required dependencies
+- No surprises — deterministic builds
+- No Desktop/WSL drama — pure Docker on a real Linux host
     
-    The container is meant to be thrown away.
-    The image is the only thing that persists.
-    Everything else is ephemeral by design.
+- The container is meant to be thrown away.
+- The image is the only thing that persists.
+- Everything else is ephemeral by design.
 
 **Why admin modules aren’t baked into the image?**
 
-Azure, Microsoft 365, Graph, and Exchange modules change constantly.
-
-If they were included in the image, the container would drift, break, or require constant rebuilds.
-
-Installing them into the persistent mount keeps the image sterile and reproducible while letting the admin toolchain stay current.
+- Azure, Microsoft 365, Graph, and Exchange modules change constantly.
+- If they were included in the image, the container would drift, break, or require constant rebuilds.
+- Installing them into the persistent mount keeps the image sterile and reproducible while letting the admin toolchain stay current.
 
 ## 📜 License
 This project is released into the public domain / unlicensed.
