@@ -42,7 +42,7 @@ lily-pwsh/
 ##🔧 Dockerfile Reminder Path
 The Dockerfile includes a startup reminder:
 ```
-CMD ["-NoLogo", "-Command", "Write-Host 'Reminder: Run ./mnt/data/bootstrap/Install-AdminModules.ps1' -ForegroundColor Yellow; pwsh"]
+CMD ["-NoLogo", "-Command", "Write-Host 'Reminder: Run ./mnt/data/bootstrap/Install-AzureModules.ps1' -ForegroundColor Yellow; pwsh"]
 ```
 This prints a message every time the container starts, reminding you to run your module‑install script from the persistent data mount.
 
@@ -91,15 +91,15 @@ Anything you install should live inside your persistent data directory so it sur
 
 A helper script is included:
 ```
-scripts/Install-AdminModules.ps1
+scripts/Install-AzureModules.ps1
 ```
 Copy this script into your persistent mount:
 ```
-$HOME/pwsh-data/bootstrap/Install-AdminModules.ps1
+$HOME/pwsh-data/bootstrap/Install-AzureModules.ps1
 ```
 Then run it from inside the container:
 ```
-./mnt/data/bootstrap/Install-AdminModules.ps1
+./mnt/data/bootstrap/Install-AzureModules.ps1
 ```
 What this script installs
 This script sets up the complete Microsoft admin toolchain, including:
