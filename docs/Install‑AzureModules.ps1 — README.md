@@ -21,7 +21,7 @@ Some workflows require a VM that is joined to an Entra tenant — for example, w
 - External or unmanaged devices cannot authenticate
 - You need to test behavior under real tenant policies
 - These identity‑bound sandboxes are still controlled environments, but they carry an Entra identity for testing or client‑specific operations. The script ensures the module stack in these VMs remains clean and consistent even when tenant policies are strict.
-- This is the same pattern used when building controlled environments like the one we set up for BNH — compliant, isolated, and predictable.
+- This is the same pattern used when building controlled environments — compliant, isolated, and predictable.
 
 ## 🧩 Why This Script Exists
 Microsoft’s module ecosystem is fragmented:
