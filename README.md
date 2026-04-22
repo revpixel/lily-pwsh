@@ -5,6 +5,7 @@ lily-pwsh is a sterile, reproducible PowerShell environment designed for people 
 
 ## ✨ Features
 **Minimal Ubuntu 24.04 base**
+    
     Correct Microsoft repo for PowerShell
     No leftover apt cache or build debris
     Starts directly in pwsh
