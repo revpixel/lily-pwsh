@@ -121,7 +121,9 @@ It also handles:
     installing everything into /mnt/data instead of the image
     This keeps the image sterile while giving you a fully‑loaded admin shell.
 
-Why the container prints a reminder
+You can run this script as often as you want to refresh or update modules without rebuilding the container. This keeps the image sterile while giving you a fully loaded, always‑current admin shell.
+
+**Why the container prints a reminder?**
 On startup, the container prints:
 ```
 Reminder: Run ./mnt/data/bootstrap/Install-AzureModules.ps1
