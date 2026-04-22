@@ -18,13 +18,23 @@ Optional persistent data directory via bind mount
 
 Works cleanly from Windows Terminal using SSH keys
 
+## ⚠️ Prerequisites
+This project assumes:
+
+You already have Docker installed on your Linux host
+```(If not, check your distro’s documentation or Docker’s official install guide.)```
+
+You remember to mark any scripts in the scripts/ folder as executable
+```(chmod +x scripts/<scriptname>)```
+
 ## 📦 Repository Contents
 ```
 lily-pwsh/
 ├── Dockerfile
 ├── README.md
 ├── scripts/
-│   └── rebuild.sh
+│   ├── rebuild.sh
+│   └── run-pwsh.sh
 └── examples/
     └── run-interactive.md
 ```
@@ -37,7 +47,8 @@ This produces a clean, minimal PowerShell image with no drift and no cached apt 
 
 ## ▶️ Running the Container
 Basic interactive shell
-```docker run --rm -it lily-pwsh```
+```docker run --rm -it lily-pwsh``` or 
+```scripts/run-pwsh.sh```
 
 With a persistent data directory
 ```
