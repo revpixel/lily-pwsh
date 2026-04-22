@@ -1,10 +1,9 @@
-⭐ READY? Here is your README.md as raw text (no code fences, no formatting wrappers):
-lily-pwsh
-A clean, minimal, zero‑drift PowerShell container built on Ubuntu 24.04.
+## lily-pwsh
+## A clean, minimal, zero‑drift PowerShell container built on Ubuntu 24.04.
 
 lily-pwsh is a sterile, reproducible PowerShell environment designed for people who want a predictable shell without host contamination, leftover apt cache, or the bloat of full Linux installs. It’s intentionally simple: build it, run it, throw it away. The image is the only persistent artifact.
 
-✨ Features
+## ✨ Features
 Minimal Ubuntu 24.04 base
 
 Correct Microsoft repo for PowerShell
@@ -19,7 +18,7 @@ Optional persistent data directory via bind mount
 
 Works cleanly from Windows Terminal using SSH keys
 
-📦 Repository Contents
+## 📦 Repository Contents
 lily-pwsh/
 ├── Dockerfile
 ├── README.md
@@ -35,7 +34,7 @@ docker build -t lily-pwsh .
 
 This produces a clean, minimal PowerShell image with no drift and no cached apt layers.
 
-▶️ Running the Container
+## ▶️ Running the Container
 Basic interactive shell
 docker run --rm -it lily-pwsh
 
@@ -46,7 +45,7 @@ lily-pwsh
 
 Anything placed in /mnt/data inside the container persists between runs.
 
-🪟 Using It from Windows Terminal (SSH‑based workflow)
+## 🪟 Using It from Windows Terminal (SSH‑based workflow)
 I run this container from Windows Terminal using SSH keys to authenticate to my Linux host. This avoids passwords, reduces friction, and makes the workflow feel native.
 
 Example Windows Terminal profile command:
@@ -60,7 +59,7 @@ ssh-copy-id your-linux-host
 
 After that, Windows Terminal launches the container instantly with no prompts.
 
-🧪 Philosophy: A Sterile, Ephemeral Lab
+## 🧪 Philosophy: A Sterile, Ephemeral Lab
 This project exists because I wanted a PowerShell environment that behaves like a clean lab:
 
 No drift — every container starts identical
