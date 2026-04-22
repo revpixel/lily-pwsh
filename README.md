@@ -98,6 +98,7 @@ Then run it from inside the container:
 ```
 What this script installs
 This script sets up the complete Microsoft admin toolchain, including:
+
     Az (Azure Resource Manager)
     Microsoft.Graph (GA + Beta)
     ExchangeOnlineManagement
@@ -110,6 +111,7 @@ This script sets up the complete Microsoft admin toolchain, including:
     MSOnline
 
 It also handles:
+
     module updates
     forced reinstalls
     removing stale versions
