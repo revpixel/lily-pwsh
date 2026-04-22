@@ -30,13 +30,13 @@ You remember to mark any scripts in the scripts/ folder as executable
 ## 📦 Repository Contents
 ```
 lily-pwsh/
-├── Dockerfile
-├── README.md
+└── examples/
+    └── run-interactive.md
 ├── scripts/
 │   ├── rebuild.sh
 │   └── run-pwsh.sh
-└── examples/
-    └── run-interactive.md
+├── Dockerfile
+├── README.md
 ```
 🛠️ Building the Image
 From the repo root:
