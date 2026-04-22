@@ -31,7 +31,8 @@ lily-pwsh/
 🛠️ Building the Image
 From the repo root:
 
-```docker build -t lily-pwsh .```
+```docker build -t lily-pwsh .
+```
 This produces a clean, minimal PowerShell image with no drift and no cached apt layers.
 
 ## ▶️ Running the Container
@@ -52,7 +53,8 @@ I run this container from Windows Terminal using SSH keys to authenticate to my 
 
 Example Windows Terminal profile command:
 
-```ssh your-linux-host "docker run --rm -it -v ~/pwsh-data:/mnt/data lily-pwsh"```
+```ssh your-linux-host "docker run --rm -it -v ~/pwsh-data:/mnt/data lily-pwsh"
+```
 
 If someone needs SSH keys:
 ```
