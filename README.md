@@ -85,6 +85,27 @@ ssh-copy-id your-linux-host
 ```
 After that, Windows Terminal launches the container instantly with no prompts.
 
+## 🧩 Installing PowerShell Modules (Persistent Bootstrap Script)
+This container is intentionally sterile — no modules are baked into the image.
+Anything you install should live inside your persistent data directory so it survives container rebuilds.
+
+A helper script is included:
+```
+scripts/Install-AdminModules.ps1
+```
+Copy this script into your persistent mount:
+```
+$HOME/pwsh-data/bootstrap/Install-AdminModules.ps1
+```
+Then run it from inside the container:
+```
+./mnt/data/bootstrap/Install-AdminModules.ps1
+```
+This is intentional.
+It ensures you don’t forget to install modules into the persistent mount the first time you run the container.
+
+If you store your bootstrap script somewhere else inside ```/mnt/data```, update the reminder path in the Dockerfile accordingly.
+
 ## 🧪 Philosophy: A Sterile, Ephemeral Lab
 This project exists because I wanted a PowerShell environment that behaves like a clean lab:
 
