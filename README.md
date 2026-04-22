@@ -33,7 +33,7 @@ lily-pwsh/
 ├── Dockerfile
 ├── README.md
 ```
-##🔧 Dockerfile Reminder Path
+## 🔧 Dockerfile Reminder Path
 The Dockerfile includes a startup reminder:
 ```
 CMD ["-NoLogo", "-Command", "Write-Host 'Reminder: Run ./mnt/data/bootstrap/Install-AzureModules.ps1' -ForegroundColor Yellow; pwsh"]
