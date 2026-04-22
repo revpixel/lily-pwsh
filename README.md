@@ -39,6 +39,15 @@ lily-pwsh/
 ├── Dockerfile
 ├── README.md
 ```
+##🔧 Dockerfile Reminder Path
+The Dockerfile includes a startup reminder:
+```
+CMD ["-NoLogo", "-Command", "Write-Host 'Reminder: Run ./mnt/data/bootstrap/Install-AdminModules.ps1' -ForegroundColor Yellow; pwsh"]
+```
+This prints a message every time the container starts, reminding you to run your module‑install script from the persistent data mount.
+
+If you store your script in a different location inside ```/mnt/data```, update the reminder path in the Dockerfile accordingly. The reminder is intentionally hard‑coded so users don’t forget to install modules into the persistent mount instead of baking them into the image.
+
 🛠️ Building the Image
 From the repo root:
 
