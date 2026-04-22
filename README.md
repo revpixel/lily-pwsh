@@ -25,7 +25,7 @@ lily-pwsh/
 ├── scripts/
 │   └── rebuild.sh
 └── examples/
-└── run-interactive.md
+    └── run-interactive.md
 
 🛠️ Building the Image
 From the repo root:
