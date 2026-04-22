@@ -119,8 +119,7 @@ It also handles:
 - module updates
 - forced reinstalls
 - removing stale versions
-- installing everything into /mnt/data instead of the image
-- This keeps the image sterile while giving you a fully‑loaded admin shell.
+- This keeps the image sterile
 
 You can run this script as often as you want to refresh or update modules without rebuilding the container. This keeps the image sterile while giving you a fully loaded, always‑current admin shell.
 <img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/9ff4464e-821a-45a0-a840-f10f4fd1d645" />
