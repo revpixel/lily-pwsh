@@ -79,6 +79,7 @@ ssh-keygen -t ed25519 -C "your_email@example.com"
 ssh-copy-id your-linux-host
 ```
 After that, Windows Terminal launches the container instantly with no prompts.
+<img width="1115" height="628" alt="Screenshot 2026-04-22 091115" src="https://github.com/user-attachments/assets/f819a7ea-1ef5-40e3-892c-585815162730" />
 
 ## 🧰 Installing PowerShell Modules (Persistent Bootstrap Script)
 This container is intentionally sterile — no modules are baked into the image.
@@ -119,6 +120,7 @@ It also handles:
     This keeps the image sterile while giving you a fully‑loaded admin shell.
 
 You can run this script as often as you want to refresh or update modules without rebuilding the container. This keeps the image sterile while giving you a fully loaded, always‑current admin shell.
+<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/9ff4464e-821a-45a0-a840-f10f4fd1d645" />
 
 **Why the container prints a reminder?**
 On startup, the container prints:
