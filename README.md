@@ -85,7 +85,7 @@ ssh-copy-id your-linux-host
 ```
 After that, Windows Terminal launches the container instantly with no prompts.
 
-## 🧩 Installing PowerShell Modules (Persistent Bootstrap Script)
+## 🧰 Installing PowerShell Modules (Persistent Bootstrap Script)
 This container is intentionally sterile — no modules are baked into the image.
 Anything you install should live inside your persistent data directory so it survives container rebuilds.
 
@@ -101,8 +101,32 @@ Then run it from inside the container:
 ```
 ./mnt/data/bootstrap/Install-AdminModules.ps1
 ```
-This is intentional.
-It ensures you don’t forget to install modules into the persistent mount the first time you run the container.
+What this script installs
+This script sets up the complete Microsoft admin toolchain, including:
+    Az (Azure Resource Manager)
+    Microsoft.Graph (GA + Beta)
+    ExchangeOnlineManagement
+    MicrosoftTeams
+    PnP.PowerShell
+    Security & Compliance cmdlets
+    Optional legacy modules:
+    AzureAD
+    AzureADPreview
+    MSOnline
+
+It also handles:
+    module updates
+    forced reinstalls
+    removing stale versions
+    installing everything into /mnt/data instead of the image
+    This keeps the image sterile while giving you a fully‑loaded admin shell.
+
+Why the container prints a reminder
+On startup, the container prints:
+```
+Reminder: Run ./mnt/data/bootstrap/Install-AzureModules.ps1
+```
+This ensures you don’t forget to install modules into the persistent mount the first time you run the container.
 
 If you store your bootstrap script somewhere else inside ```/mnt/data```, update the reminder path in the Dockerfile accordingly.
 
@@ -110,19 +134,20 @@ If you store your bootstrap script somewhere else inside ```/mnt/data```, update
 This project exists because I wanted a PowerShell environment that behaves like a clean lab:
 
 No drift — every container starts identical
-
 No contamination — nothing leaks into the host
-
 No bloat — only the required dependencies
-
 No surprises — deterministic builds
-
 No Desktop/WSL drama — pure Docker on a real Linux host
 
 The container is meant to be thrown away.
 The image is the only thing that persists.
 Everything else is ephemeral by design.
 
-📜 License
+**Why admin modules aren’t baked into the image?
+Azure, Microsoft 365, Graph, and Exchange modules change constantly.
+If they were included in the image, the container would drift, break, or require constant rebuilds.
+Installing them into the persistent mount keeps the image sterile and reproducible while letting the admin toolchain stay current.
+
+## 📜 License
 This project is released into the public domain / unlicensed.
 Do whatever you want with it.
