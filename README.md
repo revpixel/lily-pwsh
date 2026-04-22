@@ -31,8 +31,8 @@ lily-pwsh/
 🛠️ Building the Image
 From the repo root:
 
-```docker build -t lily-pwsh .
-```
+```docker build -t lily-pwsh .```
+
 This produces a clean, minimal PowerShell image with no drift and no cached apt layers.
 
 ## ▶️ Running the Container
