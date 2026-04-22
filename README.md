@@ -99,25 +99,23 @@ Then run it from inside the container:
 ```
 What this script installs
 This script sets up the complete Microsoft admin toolchain, including:
-
-    Az (Azure Resource Manager)
-    Microsoft.Graph (GA + Beta)
-    ExchangeOnlineManagement
-    MicrosoftTeams
-    PnP.PowerShell
-    Security & Compliance cmdlets
-    Optional legacy modules:
-    AzureAD
-    AzureADPreview
-    MSOnline
+- Az (Azure Resource Manager)
+- Microsoft.Graph (GA + Beta)
+- ExchangeOnlineManagement
+- MicrosoftTeams
+- PnP.PowerShell
+- Security & Compliance cmdlets
+- Optional legacy modules:
+- AzureAD
+- AzureADPreview
+- MSOnline
 
 It also handles:
-
-    module updates
-    forced reinstalls
-    removing stale versions
-    installing everything into /mnt/data instead of the image
-    This keeps the image sterile while giving you a fully‑loaded admin shell.
+- module updates
+- forced reinstalls
+- removing stale versions
+- installing everything into /mnt/data instead of the image
+- This keeps the image sterile while giving you a fully‑loaded admin shell.
 
 You can run this script as often as you want to refresh or update modules without rebuilding the container. This keeps the image sterile while giving you a fully loaded, always‑current admin shell.
 <img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/9ff4464e-821a-45a0-a840-f10f4fd1d645" />
@@ -133,7 +131,6 @@ If you store your bootstrap script somewhere else inside ```/mnt/data```, update
 
 ## 🧪 Philosophy: A Sterile, Ephemeral Lab
 This project exists because I wanted a PowerShell environment that behaves like a clean lab:
-
 - No drift — every container starts identical
 - No contamination — nothing leaks into the host
 - No bloat — only the required dependencies
@@ -145,12 +142,10 @@ This project exists because I wanted a PowerShell environment that behaves like 
 - Everything else is ephemeral by design.
 
 **Why admin modules aren’t baked into the image?**
-
 - Azure, Microsoft 365, Graph, and Exchange modules change constantly.
 - If they were included in the image, the container would drift, break, or require constant rebuilds.
 - Installing them into the persistent mount keeps the image sterile and reproducible while letting the admin toolchain stay current.
 
 ## 📜 License
-This project is released into the public domain / unlicensed.
-
-Do whatever you want with it.
+- This project is released into the public domain / unlicensed.
+- Do whatever you want with it.
