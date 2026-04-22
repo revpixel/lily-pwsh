@@ -21,7 +21,6 @@ Works cleanly from Windows Terminal using SSH keys
 ## 📦 Repository Contents
 lily-pwsh/
 ├── Dockerfile
-
 ├── README.md
 ├── scripts/
 │   └── rebuild.sh
