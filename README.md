@@ -33,6 +33,7 @@ lily-pwsh/
 └── examples/
     └── run-interactive.md
 ├── scripts/
+│   ├── Install-AzureModules.ps1
 │   ├── rebuild.sh
 │   └── run-pwsh.sh
 ├── Dockerfile
