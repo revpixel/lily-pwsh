@@ -54,7 +54,7 @@ I run this container from Windows Terminal using SSH keys to authenticate to my 
 Example Windows Terminal profile command:
 
 ```
-ssh your-linux-host "docker run --rm -it -v ~/pwsh-data:/mnt/data lily-pwsh"
+ssh -t <your-linux-user>@<your-linux-host> /home/<your-linux-user>/run-pwsh.sh
 ```
 
 If someone needs SSH keys:
