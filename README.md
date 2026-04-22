@@ -42,7 +42,7 @@ This prints a message every time the container starts, reminding you to run your
 
 If you store your script in a different location inside ```/mnt/data```, update the reminder path in the Dockerfile accordingly. The reminder is intentionally hard‑coded so users don’t forget to install modules into the persistent mount instead of baking them into the image.
 
-🛠️ Building the Image
+## 🛠️ Building the Image
 From the repo root:
 
 ```docker build -t lily-pwsh .```
