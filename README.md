@@ -146,10 +146,11 @@ This project exists because I wanted a PowerShell environment that behaves like 
 
 **Why admin modules aren’t baked into the image?**
 
-Azure, Microsoft 365, Graph, and Exchange modules change constantly.
-If they were included in the image, the container would drift, break, or require constant rebuilds.
-Installing them into the persistent mount keeps the image sterile and reproducible while letting the admin toolchain stay current.
+    Azure, Microsoft 365, Graph, and Exchange modules change constantly.
+    If they were included in the image, the container would drift, break, or require constant rebuilds.
+    Installing them into the persistent mount keeps the image sterile and reproducible while letting the admin toolchain stay current.
 
 ## 📜 License
 This project is released into the public domain / unlicensed.
+
 Do whatever you want with it.
