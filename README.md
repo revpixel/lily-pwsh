@@ -19,7 +19,8 @@ Optional persistent data directory via bind mount
 Works cleanly from Windows Terminal using SSH keys
 
 ## 📦 Repository Contents
-```lily-pwsh/
+```
+lily-pwsh/
 ├── Dockerfile
 ├── README.md
 ├── scripts/
@@ -30,18 +31,19 @@ Works cleanly from Windows Terminal using SSH keys
 🛠️ Building the Image
 From the repo root:
 
-docker build -t lily-pwsh .
-
+```docker build -t lily-pwsh .```
 This produces a clean, minimal PowerShell image with no drift and no cached apt layers.
 
 ## ▶️ Running the Container
 Basic interactive shell
-docker run --rm -it lily-pwsh
+```docker run --rm -it lily-pwsh```
 
 With a persistent data directory
+```
 docker run --rm -it \
 -v "$HOME/pwsh-data:/mnt/data" \
 lily-pwsh
+```
 
 Anything placed in /mnt/data inside the container persists between runs.
 
@@ -50,13 +52,13 @@ I run this container from Windows Terminal using SSH keys to authenticate to my 
 
 Example Windows Terminal profile command:
 
-ssh your-linux-host "docker run --rm -it -v ~/pwsh-data:/mnt/data lily-pwsh"
+```ssh your-linux-host "docker run --rm -it -v ~/pwsh-data:/mnt/data lily-pwsh"```
 
 If someone needs SSH keys:
-
+```
 ssh-keygen -t ed25519 -C "your_email@example.com"
 ssh-copy-id your-linux-host
-
+```
 After that, Windows Terminal launches the container instantly with no prompts.
 
 ## 🧪 Philosophy: A Sterile, Ephemeral Lab
