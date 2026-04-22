@@ -8,5 +8,10 @@ This guide shows several ways to run the `lily-pwsh` container, from a simple lo
 
 Run the container and drop directly into PowerShell:
 
-```bash
+```
 docker run --rm -it lily-pwsh
+```
+Run the container with a persistent mounted data folder and drop directly into PowerShell:
+```
+docker run --rm -it --init -v "$HOME/pwsh-data:/mnt/data" lily-pwsh
+```
