@@ -16,10 +16,12 @@ lily-pwsh is a sterile, reproducible PowerShell environment designed for people 
 This project assumes:
 
 You already have Docker installed on your Linux host
-```(If not, check your distro’s documentation or Docker’s official install guide.)```
+(If not, check your distro’s documentation or Docker’s official install guide.)
 
 You remember to mark any scripts in the scripts/ folder as executable
-```(chmod +x scripts/<scriptname>)```
+```
+chmod +x scripts/<scriptname>
+```
 
 ## 📦 Repository Contents
 ```
@@ -44,14 +46,16 @@ If you store your script in a different location inside ```/mnt/data```, update 
 
 ## 🛠️ Building the Image
 From the repo root:
-
-```docker build -t lily-pwsh .```
+```
+docker build -t lily-pwsh .
+```
 
 This produces a clean, minimal PowerShell image with no drift and no cached apt layers.
 
 ## ▶️ Running the Container
 Basic interactive shell
-```docker run --rm -it lily-pwsh``` or 
+```docker run --rm -it lily-pwsh``` 
+or 
 ```scripts/run-pwsh.sh```
 
 With a persistent data directory
