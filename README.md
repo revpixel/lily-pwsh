@@ -125,6 +125,13 @@ It also handles:
 You can run this script as often as you want to refresh or update modules without rebuilding the container. This keeps the image sterile while giving you a fully loaded, always‑current admin shell.
 <img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/9ff4464e-821a-45a0-a840-f10f4fd1d645" />
 
+**📘 Full Documentation for Install‑AzureModules.ps1**
+A full, detailed README for the Azure module installer script — including module lists, expected warnings, environment philosophy, and a complete example run — is available here:
+
+👉 https://github.com/revpixel/lily-pwsh/blob/main/docs/Install%E2%80%91AzureModules.ps1%20%E2%80%94%20README.md
+
+This doc covers the why, the how, and the operational model behind the script, including sterile sandboxes, identity‑bound VMs, and deterministic module baselines.
+
 **Why the container prints a reminder?**
 On startup, the container prints:
 ```
