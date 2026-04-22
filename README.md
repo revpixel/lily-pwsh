@@ -149,6 +149,9 @@ This project exists because I wanted a PowerShell environment that behaves like 
 - If they were included in the image, the container would drift, break, or require constant rebuilds.
 - Installing them into the persistent mount keeps the image sterile and reproducible while letting the admin toolchain stay current.
 
+## 🧹 Host hygiene (optional)
+If you prefer a truly zero‑drift Docker host, you can optionally schedule a nightly docker system prune -f or similar cleanup task. This isn’t required for the container to function, but it complements the sterile‑lab workflow by keeping unused layers, networks, and build cache from accumulating over time. How you schedule it is up to you.
+
 ## 📜 License
 - This project is released into the public domain / unlicensed.
 - Do whatever you want with it.
