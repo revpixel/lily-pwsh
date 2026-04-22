@@ -19,14 +19,14 @@ Optional persistent data directory via bind mount
 Works cleanly from Windows Terminal using SSH keys
 
 ## 📦 Repository Contents
-lily-pwsh/
+```lily-pwsh/
 ├── Dockerfile
 ├── README.md
 ├── scripts/
 │   └── rebuild.sh
 └── examples/
     └── run-interactive.md
-
+```
 🛠️ Building the Image
 From the repo root:
 
