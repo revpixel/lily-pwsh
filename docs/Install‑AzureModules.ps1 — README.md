@@ -122,7 +122,7 @@ Whether the VM is identity‑free or Entra‑joined, the goal is the same — el
 > and reinstalled cleanly. This is expected behavior and ensures a zero‑drift module baseline.
 ```
 PowerShell 7.6.0
-PS /> ./mnt/data/bootstrap/Install-AdminModules.ps1
+PS /> ./mnt/repo-scripts/Install-AzureModules.ps1
 Preparing modern sandbox environment...
 
 Processing Az...
