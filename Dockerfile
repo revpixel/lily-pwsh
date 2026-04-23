@@ -15,4 +15,4 @@ RUN apt-get update && \
 
 ENTRYPOINT ["pwsh"]
 
-CMD ["-NoLogo", "-Command", "Write-Host 'Reminder: Run ./mnt/data/bootstrap/Install-AdminModules.ps1' -ForegroundColor Yellow; pwsh"]
+CMD ["-NoLogo", "-Command", "Write-Host 'Reminder: Run ./mnt/data/bootstrap/Install-AzureModules.ps1' -ForegroundColor Yellow; pwsh"]
