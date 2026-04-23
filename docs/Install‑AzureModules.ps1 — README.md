@@ -96,7 +96,7 @@ PowerShellGet and PackageManagement are core engine modules that load automatica
 These warnings can be safely ignored.
 ## 📄 Example Output
 > This example shows a *reinstall* run, which is the normal behavior after the first execution.  
-> The script removes old versions and reinstalls clean copies to guarantee a zero‑drift module baseline.
+> The script removes old versions and reinstalls clean copies to guarantee a zero‑drift module baseline. 
 ```
 PS /> ./mnt/data/bootstrap/Install-AdminModules.ps1
 Preparing sandbox environment...
@@ -137,7 +137,4 @@ Reminder: Verify installed modules with:
 Get-InstalledModule | Sort-Object Name | Format-Table Name, Version
 PS />
 ```
-
-
-
-
+> The script prints a reminder to list installed modules if you want to verify the final state. 
