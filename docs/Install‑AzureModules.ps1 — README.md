@@ -95,8 +95,10 @@ PowerShellGet and PackageManagement are core engine modules that load automatica
 
 These warnings can be safely ignored.
 ## 📄 Example Output
-> This example shows a *reinstall* run, which is the normal behavior after the first execution.  
-> The script removes old versions and reinstalls clean copies to guarantee a zero‑drift module baseline. 
+> This example shows a *normal* module installation run.  
+> Some modules (like Microsoft.Graph) install multiple workload submodules as dependencies.  
+> On subsequent passes, those submodules may report “Already up to date” before being removed  
+> and reinstalled cleanly. This is expected behavior and ensures a zero‑drift module baseline.
 ```
 PowerShell 7.6.0
 PS /> ./mnt/data/bootstrap/Install-AdminModules.ps1
