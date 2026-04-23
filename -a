@@ -1,0 +1,73 @@
+[33m959a706[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m reminder update
+[33m381e2a2[m CRLF issues
+[33m236dcce[m Update Install‑AzureModules.ps1 README
+[33mdf923ee[m Revise README for clarity on module management
+[33m959bdcf[m Revise README for AzureModules script updates
+[33m2527e3a[m Add reminder to verify installed Azure modules
+[33m596cf13[m Refactor Install-AzureModules.ps1 for clarity
+[33mfbb8149[m Refactor Install-AzureModules.ps1 comments and logic
+[33mfa220b6[m Update example output in Install-AzureModules.ps1
+[33m1ec2e8d[m Revise example output for Install-AzureModules.ps1
+[33m40ed11c[m Refactor Install-AzureModules.ps1 for modern modules
+[33m7a21a2f[m Fix link to run-pwsh.sh in run-interactive.md
+[33ma1d730d[m Clarify usage of wrapper script in Windows Terminal
+[33md83b3f1[m Add Windows Terminal SSH usage instructions
+[33m9641eaa[m Clarify example output and add verification reminder
+[33m245421b[m Update module versions in Install-AzureModules.ps1
+[33mea3c94d[m Update README with rebuild scripts details
+[33m9035dd8[m Update rebuild scripts documentation with comparisons
+[33m9338d3b[m Add rebuild-hard.sh script for clean container rebuild
+[33mad0a692[m Simplify rebuild script for lily-pwsh container
+[33m54e1d7a[m Enhance rebuild script with comments and output messages
+[33mb1c7e4e[m Update run-interactive.md
+[33md5fd871[m Update Install‑AzureModules.ps1 — README.md
+[33md47d52b[m Clarify README by removing redundant information
+[33mf90412e[m Revise README for clarity and improved structure
+[33m1c886d5[m Fix link formatting in README.md
+[33md79d401[m Update README.md
+[33mf570428[m Update README to emphasize PowerShell container description
+[33m4e6ca10[m Fix link formatting in README.md
+[33m40ea1dd[m Add documentation link for Install-AzureModules.ps1
+[33mbc81dd7[m Update repository contents section in README
+[33m9a7845e[m Add Install-AzureModules.ps1 for module management
+[33mcd65ee7[m Add host hygiene section to README
+[33mf5bf110[m Improve README formatting for clarity
+[33m09b945c[m Fix header formatting for building the image section
+[33m0f6b756[m Fix formatting of Dockerfile Reminder Path section
+[33m989d7cb[m Update README.md
+[33mcd5add4[m Refactor README for improved readability
+[33m74217ec[m Refactor philosophy section in README.md
+[33mfc892e8[m Update README with explanation on admin modules
+[33m7125105[m Correct formatting in admin modules explanation
+[33mc4e6476[m Update README with explanation for admin modules
+[33mbc078d9[m Improve formatting of philosophy section in README
+[33ma0168dd[m Update README with installation instructions and images
+[33m0b7ce7c[m Enhance README with script installation details
+[33m4c976a2[m Update README with new feature details
+[33mf97dda7[m Enhance features section formatting in README
+[33mdf0b0b5[m Update README with script usage clarification
+[33m5829ff0[m Update Dockerfile reminder path and script references
+[33m852eacb[m Revise README for clarity and module installation details
+[33mcb58cb0[m Document PowerShell module installation process
+[33m61f76ec[m Add Dockerfile reminder path to README
+[33m036f4dd[m Add Install-AzureModules.ps1 to scripts directory
+[33mfe2ed5d[m Add files via upload
+[33m06f3184[m Update repository contents in README.md
+[33m406f711[m Enhance README with prerequisites and run scripts
+[33med1d48f[m Add script to run PowerShell in Docker
+[33m76a6011[m Modify SSH command in README.md
+[33me271bd8[m Correct SSH command formatting in README
+[33m7a2270c[m Correct Docker build command formatting
+[33m1d77ca2[m Correct code block formatting in README
+[33m0f40b18[m Improve formatting of code blocks in README
+[33m357c424[m Update README.md
+[33m4bb4c6d[m Fix formatting in README.md for examples section
+[33m6f795d5[m Remove extra newline in README.md
+[33m00394d9[m Add README.md to repository contents section
+[33m84b7bb4[m Refactor README.md with markdown headers
+[33mf87c486[m Enhance README.md with features and usage details
+[33m071cc9d[m Create interactive run guide for lily-pwsh
+[33m3391750[m Add rebuild script for lily-pwsh container
+[33m30b022c[m Add files via upload
+[33m867acce[m Enhance README with project details and features
+[33m73ee02b[m Initial commit
