@@ -115,17 +115,6 @@ This script is part of a broader operational philosophy: clean baselines, determ
 
 Whether the VM is identity‑free or Entra‑joined, the goal is the same — eliminate drift, enforce consistency, and ensure every module behaves exactly as expected.
 
-## ⚠️ Expected Warnings During a Normal Run
-You may see warnings like:
-```
-WARNING: The version '1.4.8.1' of module 'PackageManagement' is currently in use.
-WARNING: The version '2.2.5' of module 'PowerShellGet' is currently in use.
-```
-These are expected.
-
-PowerShellGet and PackageManagement are core engine modules that load automatically when the session starts, so they cannot be removed or updated mid‑session. The script continues normally, and all other modules install cleanly.
-
-These warnings can be safely ignored.
 ## 📄 Example Output
 > This example shows a *normal* module installation run.  
 > Some modules (like Microsoft.Graph) install multiple workload submodules as dependencies.  
