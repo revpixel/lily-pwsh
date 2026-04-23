@@ -36,22 +36,54 @@ Version drift between snapshots or rebuilds can cause unpredictable behavior.
 This script eliminates that by enforcing a deterministic module baseline every time it runs.
 
 ## ⚙️ What the Script Does
-**Module hygiene**
-The script:
-- Ensures PSGallery is trusted
-- Checks each module against the latest version
-- Removes all installed versions to avoid drift
-- Installs fresh copies of each module
-- Pulls in all dependencies cleanly
-- Covers GA, Beta, and legacy modules
 
-**Modules included**
-- Az (Azure)
-- Microsoft.Graph (full GA workloads)
-- Microsoft.Graph.Beta (full Beta workloads)
-- ExchangeOnlineManagement
-- MicrosoftTeams (legacy)
-- PnP.PowerShell
+### Module hygiene
+This script enforces a clean, deterministic module environment by:
+
+- Ensuring PSGallery is trusted
+- Checking each module against the latest available version
+- Removing all installed versions to prevent drift
+- Installing fresh copies of each module
+- Pulling in all dependencies cleanly
+- Guaranteeing consistent results across rebuilds and containers
+
+### Modules included (Modern + Workloads)
+
+- **Az** (Azure Resource Manager)
+- **Microsoft.Graph** (GA)
+- **Microsoft.Graph.Beta** (Beta)
+- **Microsoft Graph workload modules**, including:
+  - Authentication  
+  - Directory Management  
+  - Sign‑Ins  
+  - Security  
+  - Reports  
+  - Device Management  
+  - Identity Governance  
+  - Teams  
+- **ExchangeOnlineManagement** (EXO V3)
+- **MicrosoftTeams**
+- **PnP.PowerShell**
+
+### Legacy modules removed
+The following deprecated modules are intentionally excluded:
+
+- AzureAD  
+- AzureADPreview  
+- MSOnline  
+
+These modules are not supported in PowerShell 7 and are scheduled for retirement.
+
+### Why this matters
+The script ensures:
+
+- zero‑drift module baselines  
+- reproducible environments  
+- clean dependency trees  
+- predictable behavior in containers and VMs  
+
+This keeps the environment **sterile** and fully aligned with modern Microsoft 365 administration.
+
 
 ## ⏳ Why It’s Slow — On Purpose
 A full run takes 10–15 minutes, even when everything is already installed.
