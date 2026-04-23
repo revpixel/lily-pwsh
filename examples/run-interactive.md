@@ -21,4 +21,4 @@ Example Windows Terminal profile command:
 ssh -t <your-linux-user>@<your-linux-host> /home/<your-linux-user>/run-pwsh.sh
 ```
 > Windows Terminal can’t reliably run complex docker run commands directly, so this example uses a wrapper script to avoid quoting and path issues.
-The script lives here: [`scripts/run-pwsh.sh`](scripts/run-pwsh.sh).
+The script lives here: [`scripts/run-pwsh.sh`](https://github.com/revpixel/lily-pwsh/blob/main/scripts/run-pwsh.sh)).
