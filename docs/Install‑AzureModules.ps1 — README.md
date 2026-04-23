@@ -163,6 +163,9 @@ Processing PnP.PowerShell...
 Installing/Updating PnP.PowerShell...
 
 All modern modules installed and updated.
+Reminder: Verify installed modules with:
+Get-InstalledModule | Sort-Object Name | Format-Table Name, Version
+
 PS />
 ```
 > The script prints a reminder to list installed modules if you want to verify the final state. 
