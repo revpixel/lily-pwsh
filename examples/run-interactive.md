@@ -15,3 +15,8 @@ Run the container with a persistent mounted data folder and drop directly into P
 ```
 docker run --rm -it --init -v "$HOME/pwsh-data:/mnt/data" lily-pwsh
 ```
+## 🪟 Using It from Windows Terminal (SSH‑based workflow)
+Example Windows Terminal profile command:
+```
+ssh -t <your-linux-user>@<your-linux-host> /home/<your-linux-user>/run-pwsh.sh
+```
