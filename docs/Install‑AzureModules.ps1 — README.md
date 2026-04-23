@@ -121,7 +121,7 @@ Whether the VM is identity‑free or Entra‑joined, the goal is the same — el
 > On subsequent passes, those submodules may report “Already up to date” before being removed  
 > and reinstalled cleanly. This is expected behavior and ensures a zero‑drift module baseline.
 ```
-PowerShell 7.6.0
+PowerShell 7.6.1
 PS /> ./mnt/repo-scripts/Install-AzureModules.ps1
 Preparing modern sandbox environment...
 
