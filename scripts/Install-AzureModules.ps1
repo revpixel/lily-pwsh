@@ -1,31 +1,33 @@
 <#
 
 .SYNOPSIS
-    Installs and updates all required PowerShell modules for Microsoft 365, Azure,
-    and Microsoft Graph administration in a clean, reproducible sandbox environment.
+    Installs and updates all required modern PowerShell modules for Microsoft 365,
+    Azure, and Microsoft Graph administration in a clean, reproducible sandbox environment.
 
 .DESCRIPTION
     This script prepares a sterile PowerShell environment by:
       - Trusting PSGallery (if not already trusted)
       - Checking for the latest versions of all required modules
       - Removing all previously installed versions to avoid version drift
-      - Installing fresh copies of each module (GA + Beta + legacy)
+      - Installing fresh copies of each module (GA + Beta + workload-specific)
       - Ensuring consistent module state across VM snapshots and rebuilds
 
     Modules covered include:
       - Az (Azure)
-      - Microsoft Graph (full GA + Beta workloads)
-      - Exchange Online
-      - Teams (legacy)
-      - SharePoint Online (PnP)
-      - Legacy AzureAD/MSOnline modules for compatibility
+      - Microsoft Graph (GA, Beta, and workload-specific modules)
+      - Exchange Online (EXO V3)
+      - Microsoft Teams (PowerShell module)
+      - SharePoint Online (PnP.PowerShell)
+
+    Legacy modules such as AzureAD, AzureADPreview, and MSOnline have been removed.
+    These modules are deprecated, unsupported in PowerShell 7, and scheduled for retirement.
 
     Intended for use in disposable or sandboxed environments where deterministic,
-    repeatable module state is required for cloud administration work.
+    repeatable module state is required for modern cloud administration work.
 
 .NOTES
-    This script is intentionally slow. A full run typically takes 15+ minutes
-    even on a fast system, especially when all modules are already installed.
+    This script may take several minutes to complete depending on module size and
+    dependency chains.
 
     The slowness is by design:
       - Every module is checked against PSGallery for the latest version.
@@ -42,14 +44,14 @@
 # Ensure TLS 1.2 for PSGallery
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-Write-Host "Preparing sandbox environment..." -ForegroundColor Cyan
+Write-Host "Preparing modern sandbox environment..." -ForegroundColor Cyan
 
 # Trust PSGallery
 if ((Get-PSRepository -Name PSGallery).InstallationPolicy -ne "Trusted") {
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 }
 
-# Core + Graph + Beta + Legacy
+# Modern modules only — NO legacy
 $modules = @(
     # Azure
     "Az",
@@ -69,16 +71,11 @@ $modules = @(
     # Exchange Online
     "ExchangeOnlineManagement",
 
-    # Teams (legacy)
+    # Teams (legacy module but still required)
     "MicrosoftTeams",
 
-    # SharePoint Online
-    "PnP.PowerShell",
-
-    # Legacy modules (still needed for some tenants)
-    "MSOnline",
-    "AzureAD",
-    "AzureADPreview"
+    # SharePoint Online (PnP)
+    "PnP.PowerShell"
 )
 
 foreach ($m in $modules) {
@@ -121,4 +118,4 @@ foreach ($m in $modules) {
     }
 }
 
-Write-Host "`nAll requested modules installed and updated." -ForegroundColor Green
+Write-Host "`nAll modern modules installed and updated." -ForegroundColor Green
