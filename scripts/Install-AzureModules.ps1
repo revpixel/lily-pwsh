@@ -119,4 +119,5 @@ foreach ($m in $modules) {
 }
 
 Write-Host "`nAll modern modules installed and updated." -ForegroundColor Green
+Write-Host "`nReminder: Verify installed modules with:" -ForegroundColor Cyan
 Write-Host "Get-InstalledModule | Sort-Object Name | Format-Table Name, Version" -ForegroundColor Yellow
