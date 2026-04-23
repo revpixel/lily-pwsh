@@ -28,6 +28,7 @@ chmod +x scripts/<scriptname>
 lily-pwsh/
 └── docs/
     └── Install‑AzureModules.ps1 — README.md
+    └── rebuild-scripts-README.md
 └── examples/
     └── run-interactive.md
 ├── scripts/
@@ -51,6 +52,8 @@ From the repo root:
 ```
 docker build -t lily-pwsh .
 ```
+> For details on the rebuild scripts (standard vs hard rebuild), see  
+> [`docs/rebuild-scripts-README.md`](docs/rebuild-scripts-README.md).
 
 This produces a clean, minimal PowerShell image with no drift and no cached apt layers.
 
