@@ -91,19 +91,18 @@ After that, Windows Terminal launches the container instantly with no prompts.
 
 ## 🧰 Installing PowerShell Modules (Persistent Bootstrap Script)
 This container is intentionally sterile — no modules are baked into the image.
-Anything you install should live inside your persistent data directory so it survives container rebuilds.
+Modules are installed inside the container’s filesystem and do not persist across rebuilds.
+If you restart or recreate the container, simply rerun the bootstrap script.
 
-A helper script is included:
+A helper script is included in the repo:
 ```
 scripts/Install-AzureModules.ps1
 ```
-Copy this script into your persistent mount:
+Your run script automatically syncs this into your persistent bootstrap directory, so you don’t need to copy anything manually.
+
+Run it inside the container:
 ```
-$HOME/pwsh-data/bootstrap/Install-AzureModules.ps1
-```
-Then run it from inside the container:
-```
-./mnt/data/bootstrap/Install-AzureModules.ps1
+./mnt/repo-scripts/Install-AzureModules.ps1
 ```
 What this script installs
 
