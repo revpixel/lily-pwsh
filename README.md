@@ -161,11 +161,9 @@ This doc covers the why, the how, and the operational model behind the script, i
 **Why the container prints a reminder?**
 On startup, the container prints:
 ```
-Reminder: Run ./mnt/data/bootstrap/Install-AzureModules.ps1
+Reminder: Run ./mnt/repo-scripts/Install-AzureModules.ps1
 ```
 This ensures you don’t forget to install modules into the persistent mount the first time you run the container.
-
-If you store your bootstrap script somewhere else inside ```/mnt/data```, update the reminder path in the Dockerfile accordingly.
 
 ## 🧪 Philosophy: A Sterile, Ephemeral Lab
 This project exists because I wanted a PowerShell environment that behaves like a clean lab:
