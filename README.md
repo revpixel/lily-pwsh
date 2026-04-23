@@ -106,23 +106,47 @@ Then run it from inside the container:
 ./mnt/data/bootstrap/Install-AzureModules.ps1
 ```
 What this script installs
-This script sets up the complete Microsoft admin toolchain, including:
-- Az (Azure Resource Manager)
-- Microsoft.Graph (GA + Beta)
-- ExchangeOnlineManagement
-- MicrosoftTeams
-- PnP.PowerShell
-- Security & Compliance cmdlets
-- Optional legacy modules:
-- AzureAD
-- AzureADPreview
-- MSOnline
 
-It also handles:
-- module updates
-- forced reinstalls
-- removing stale versions
-- This keeps the image sterile
+This script sets up the complete **modern** Microsoft 365 / Azure admin toolchain, including:
+
+- **Az** (Azure Resource Manager)
+- **Microsoft.Graph** (GA + Beta)
+- **Microsoft Graph workload modules**, including:
+  - Authentication
+  - Directory Management
+  - Sign‑Ins
+  - Security
+  - Reports
+  - Device Management
+  - Identity Governance
+  - Teams
+- **ExchangeOnlineManagement** (EXO V3)
+- **MicrosoftTeams** (Teams PowerShell module)
+- **PnP.PowerShell** (SharePoint Online administration)
+
+All modules installed by this script are **PowerShell 7‑compatible** and fully supported.
+
+### What this script does
+
+- Installs or updates all required modules  
+- Removes all previously installed versions  
+- Reinstalls clean copies to guarantee version alignment  
+- Ensures a **zero‑drift**, reproducible module baseline  
+- Produces deterministic results across containers, VMs, and rebuilds  
+
+This keeps the environment **sterile**, predictable, and free of legacy dependencies.
+
+### Legacy modules removed
+
+The following deprecated modules have been intentionally excluded:
+
+- AzureAD  
+- AzureADPreview  
+- MSOnline  
+
+These modules are no longer supported in PowerShell 7 and are scheduled for retirement.  
+Use the Windows PowerShell 5.1 environment (pwsh5) if you still require them.
+
 
 You can run this script as often as you want to refresh or update modules without rebuilding the container. This keeps the image sterile while giving you a fully loaded, always‑current admin shell.
 <img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/9ff4464e-821a-45a0-a840-f10f4fd1d645" />
