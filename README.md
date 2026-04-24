@@ -87,23 +87,23 @@ ssh-keygen -t ed25519 -C "your_email@example.com"
 ssh-copy-id your-linux-host
 ```
 After that, Windows Terminal launches the container instantly with no prompts.
-<img width="1115" height="628" alt="Screenshot 2026-04-22 091115" src="https://github.com/user-attachments/assets/f819a7ea-1ef5-40e3-892c-585815162730" />
+<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/d935604a-97b9-4a60-a94f-19ae3c6f21d9" />
+
 
 ## 🧰 Installing PowerShell Modules (Persistent Bootstrap Script)
 This container is intentionally sterile — no modules are baked into the image.
-Anything you install should live inside your persistent data directory so it survives container rebuilds.
+Modules are installed inside the container’s filesystem and do not persist across rebuilds.
+If you restart or recreate the container, simply rerun the bootstrap script.
 
-A helper script is included:
+A helper script is included in the repo:
 ```
 scripts/Install-AzureModules.ps1
 ```
-Copy this script into your persistent mount:
+Your run script automatically syncs this into your persistent bootstrap directory, so you don’t need to copy anything manually.
+
+Run it inside the container:
 ```
-$HOME/pwsh-data/bootstrap/Install-AzureModules.ps1
-```
-Then run it from inside the container:
-```
-./mnt/data/bootstrap/Install-AzureModules.ps1
+./mnt/repo-scripts/Install-AzureModules.ps1
 ```
 What this script installs
 
@@ -149,7 +149,8 @@ Use the Windows PowerShell 5.1 environment (pwsh5) if you still require them.
 
 
 You can run this script as often as you want to refresh or update modules without rebuilding the container. This keeps the image sterile while giving you a fully loaded, always‑current admin shell.
-<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/9ff4464e-821a-45a0-a840-f10f4fd1d645" />
+<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/747135b4-81dc-4c8d-b244-2ddfa1f97ca7" />
+
 
 **📘 Full Documentation for Install‑AzureModules.ps1**
 A full, detailed README for the Azure module installer script — including module lists, expected warnings, environment philosophy, and a complete example run — is available here:
@@ -161,11 +162,9 @@ This doc covers the why, the how, and the operational model behind the script, i
 **Why the container prints a reminder?**
 On startup, the container prints:
 ```
-Reminder: Run ./mnt/data/bootstrap/Install-AzureModules.ps1
+Reminder: Run ./mnt/repo-scripts/Install-AzureModules.ps1
 ```
 This ensures you don’t forget to install modules into the persistent mount the first time you run the container.
-
-If you store your bootstrap script somewhere else inside ```/mnt/data```, update the reminder path in the Dockerfile accordingly.
 
 ## 🧪 Philosophy: A Sterile, Ephemeral Lab
 This project exists because I wanted a PowerShell environment that behaves like a clean lab:
