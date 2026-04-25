@@ -41,7 +41,7 @@ lily-pwsh/
 ## 🔧 Dockerfile Reminder Path
 The Dockerfile includes a startup reminder:
 ```
-CMD ["-NoLogo", "-Command", "Write-Host 'Reminder: Run ./mnt/data/bootstrap/Install-AzureModules.ps1' -ForegroundColor Yellow; pwsh"]
+CMD ["-NoLogo", "-Command", "Write-Host 'Reminder: Run ./mnt/repo-scripts/Install-AzureModules.ps1' -ForegroundColor Yellow; pwsh"]
 ```
 This prints a message every time the container starts, reminding you to run your module‑install script from the persistent data mount.
 
@@ -87,8 +87,7 @@ ssh-keygen -t ed25519 -C "your_email@example.com"
 ssh-copy-id your-linux-host
 ```
 After that, Windows Terminal launches the container instantly with no prompts.
-<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/d935604a-97b9-4a60-a94f-19ae3c6f21d9" />
-
+<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/bc957325-05a5-4f76-83ad-ad7b119d3978" />
 
 ## 🧰 Installing PowerShell Modules (Persistent Bootstrap Script)
 This container is intentionally sterile — no modules are baked into the image.
@@ -99,8 +98,6 @@ A helper script is included in the repo:
 ```
 scripts/Install-AzureModules.ps1
 ```
-Your run script automatically syncs this into your persistent bootstrap directory, so you don’t need to copy anything manually.
-
 Run it inside the container:
 ```
 ./mnt/repo-scripts/Install-AzureModules.ps1
@@ -149,8 +146,7 @@ Use the Windows PowerShell 5.1 environment (pwsh5) if you still require them.
 
 
 You can run this script as often as you want to refresh or update modules without rebuilding the container. This keeps the image sterile while giving you a fully loaded, always‑current admin shell.
-<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/747135b4-81dc-4c8d-b244-2ddfa1f97ca7" />
-
+<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/cf9dccb1-1a54-4832-b055-09e4ba90f9dc" />
 
 **📘 Full Documentation for Install‑AzureModules.ps1**
 A full, detailed README for the Azure module installer script — including module lists, expected warnings, environment philosophy, and a complete example run — is available here:
