@@ -1,0 +1,1 @@
+/home/lilylilac/home/lilylilac/lily-scripts/bash/system/git-commit.sh
