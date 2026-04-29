@@ -21,7 +21,7 @@ docker run --rm -it --init \
 ## 🪟 Using It from Windows Terminal (SSH‑based workflow)
 Example Windows Terminal profile command:
 ```
-ssh -t <your-linux-user>@<your-linux-host> /home/<your-linux-user>/run-pwsh.sh
+ssh -t <your-linux-user>@<your-linux-host> /home/LINUXUSER/lily-pwsh/scripts/run-pwsh.sh
 ```
 Example Windows Terminal profile settings.json:
 ```

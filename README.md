@@ -78,7 +78,7 @@ I run this container from Windows Terminal using SSH keys to authenticate to my 
 Example Windows Terminal profile command:
 
 ```
-ssh -t <your-linux-user>@<your-linux-host> /home/<your-linux-user>/run-pwsh.sh
+ssh -t <your-linux-user>@<your-linux-host> /home/lilylilac/lily-pwsh/scripts/run-pwsh.sh
 ```
 
 If someone needs SSH keys:
