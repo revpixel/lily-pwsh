@@ -11,9 +11,12 @@ Run the container and drop directly into PowerShell:
 ```
 docker run --rm -it lily-pwsh
 ```
-Run the container with a persistent mounted data folder and drop directly into PowerShell:
+Run the container with a persistent mounted data and repo-scripts folder and drop directly into PowerShell:
 ```
-docker run --rm -it --init -v "$HOME/pwsh-data:/mnt/data" lily-pwsh
+docker run --rm -it --init \
+  -v "$HOME/pwsh-data:/mnt/data" \
+  -v "$HOME/lily-pwsh/scripts:/mnt/repo-scripts" \
+  lily-pwsh
 ```
 ## 🪟 Using It from Windows Terminal (SSH‑based workflow)
 Example Windows Terminal profile command:
