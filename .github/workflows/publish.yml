@@ -19,7 +19,7 @@ jobs:
         
       - name: Sanity check GHCR secret
         run: |
-          if [ -z "${{ secrets.GHCR-namespace }}" ]; then
+          if [ -z "${{ secrets.ghcr_namespace }}" ]; then
             echo "SECRET_EMPTY"
             exit 1
           else
