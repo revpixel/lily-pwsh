@@ -24,10 +24,31 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build image
-      run: |
-        docker build -t ghcr.io/${{ github.repository_owner }}/lily-pwsh:latest .
+      - name: Build base image (sterile)
+        run: |
+          docker build -t lily-base .
 
-    - name: Push image
-      run: |
-        docker push ghcr.io/${{ github.repository_owner }}/lily-pwsh:latest
+      - name: Create and start container
+        id: container
+        run: |
+          CONTAINER_ID=$(docker create lily-base)
+          echo "CONTAINER_ID=$CONTAINER_ID" >> $GITHUB_ENV
+          docker start $CONTAINER_ID
+
+      - name: Create /mnt/repo-scripts inside container
+        run: |
+          docker exec $CONTAINER_ID mkdir -p /mnt/repo-scripts
+
+      - name: Copy installer script into container
+        run: |
+          docker cp scripts/Install-AzureModules.ps1 $CONTAINER_ID:/mnt/repo-scripts/Install-AzureModules.ps1
+
+      # ⭐ NO MODULE INSTALL STEP — YOU ASKED TO REMOVE IT
+
+      - name: Commit sterile image with script included
+        run: |
+          docker commit $CONTAINER_ID ghcr.io/revpixel/lily-pwsh:latest
+
+      - name: Push image
+        run: |
+          docker push ghcr.io/revpixel/lily-pwsh:latest
