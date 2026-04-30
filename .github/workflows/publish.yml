@@ -22,7 +22,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_PAT }}
 
       - name: Build base image (sterile)
         run: |
@@ -42,8 +42,6 @@ jobs:
       - name: Copy installer script into container
         run: |
           docker cp scripts/Install-AzureModules.ps1 $CONTAINER_ID:/mnt/repo-scripts/Install-AzureModules.ps1
-
-      # ⭐ NO MODULE INSTALL STEP — YOU ASKED TO REMOVE IT
 
       - name: Commit sterile image with script included
         run: |
