@@ -1,4 +1,4 @@
-name: Build and Publish Baked lily-pwsh Image
+name: Build and Publish lily-pwsh Image
 
 on:
   push:
@@ -24,29 +24,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build base image (sterile)
+      - name: Build sterile image with installer script included
         run: |
-          docker build -t lily-base .
+          docker build -t ghcr.io/revpixel/lily-pwsh:latest .
 
-      - name: Create and start container
-        id: container
-        run: |
-          CONTAINER_ID=$(docker create lily-base)
-          echo "CONTAINER_ID=$CONTAINER_ID" >> $GITHUB_ENV
-          docker start $CONTAINER_ID
-
-      - name: Copy module installer into container
-        run: |
-          docker cp scripts/Install-AzureModules.ps1 $CONTAINER_ID:/Install-AzureModules.ps1
-
-      - name: Run module installer inside container
-        run: |
-          docker exec $CONTAINER_ID pwsh -File /Install-AzureModules.ps1
-
-      - name: Commit baked image
-        run: |
-          docker commit $CONTAINER_ID ghcr.io/revpixel/lily-pwsh:latest
-
-      - name: Push baked image
+      - name: Push image
         run: |
           docker push ghcr.io/revpixel/lily-pwsh:latest
