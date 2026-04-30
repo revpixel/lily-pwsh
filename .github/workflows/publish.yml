@@ -16,6 +16,15 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        
+      - name: Sanity check GHCR secret
+        run: |
+          if [ -z "${{ secrets.GHCR-namespace }}" ]; then
+            echo "SECRET_EMPTY"
+            exit 1
+          else
+            echo "SECRET_PRESENT"
+          fi
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
