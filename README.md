@@ -3,6 +3,13 @@
 
 lily-pwsh is a sterile, reproducible PowerShell environment designed for people who want a predictable shell without host contamination, leftover apt cache, or the bloat of full Linux installs. It’s intentionally simple: build it, run it, throw it away. The image is the only persistent artifact.
 
+## 🚀 Quick Run (Prebuilt Container)
+If you just want to run the prebuilt container:
+```
+docker run -it ghcr.io/revpixel/lily-pwsh:latest
+```
+This launches a clean PowerShell sandbox with the lily‑pwsh environment preconfigured.
+
 ## ✨ Features
 **Minimal Ubuntu 26.04 base**
 - Correct Microsoft repo for PowerShell
