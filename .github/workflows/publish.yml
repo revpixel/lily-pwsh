@@ -1,0 +1,52 @@
+name: Build and Publish Baked lily-pwsh Image
+
+on:
+  push:
+    branches: [ dev ]
+  workflow_dispatch:
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build base image (sterile)
+        run: |
+          docker build -t lily-base .
+
+      - name: Create and start container
+        id: container
+        run: |
+          CONTAINER_ID=$(docker create lily-base)
+          echo "CONTAINER_ID=$CONTAINER_ID" >> $GITHUB_ENV
+          docker start $CONTAINER_ID
+
+      - name: Copy module installer into container
+        run: |
+          docker cp scripts/Install-AzureModules.ps1 $CONTAINER_ID:/scripts/Install-AzureModules.ps1
+
+      - name: Run module installer inside container
+        run: |
+          docker exec $CONTAINER_ID pwsh -File /scripts/Install-AzureModules.ps1
+
+      - name: Commit baked image
+        run: |
+          docker commit $CONTAINER_ID ghcr.io/revpixel/lily-pwsh:latest
+
+      - name: Push baked image
+        run: |
+          docker push ghcr.io/revpixel/lily-pwsh:latest
