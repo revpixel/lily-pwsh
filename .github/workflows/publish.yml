@@ -37,11 +37,11 @@ jobs:
 
       - name: Copy module installer into container
         run: |
-          docker cp scripts/Install-AzureModules.ps1 $CONTAINER_ID:/scripts/Install-AzureModules.ps1
+          docker cp scripts/Install-AzureModules.ps1 $CONTAINER_ID:/Install-AzureModules.ps1
 
       - name: Run module installer inside container
         run: |
-          docker exec $CONTAINER_ID pwsh -File /scripts/Install-AzureModules.ps1
+          docker exec $CONTAINER_ID pwsh -File /Install-AzureModules.ps1
 
       - name: Commit baked image
         run: |
