@@ -22,7 +22,7 @@ jobs:
         with:
           registry: ghcr.io
           username: revpixel
-          password: ${{ secrets.GHCR_PAT }}
+          password: ${{ secrets.GHCR-namespace }}
 
       - name: Build base image (sterile)
         run: |
