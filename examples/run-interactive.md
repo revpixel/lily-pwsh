@@ -3,6 +3,12 @@
 This guide shows several ways to run the `lily-pwsh` container, from a simple local shell to a fully remote workflow using Windows Terminal and SSH keys.
 
 ---
+## 🚀 Quick Run (Prebuilt Container)
+If you just want to run the prebuilt container:
+```
+docker run -it ghcr.io/revpixel/lily-pwsh:latest
+```
+This launches a clean PowerShell sandbox with the lily‑pwsh environment preconfigured.
 
 ## 🟢 Basic Interactive Shell
 
