@@ -1,9 +1,10 @@
-FROM ubuntu:26.04
+FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install prerequisites + Microsoft repo + PowerShell
+# Update base image packages + install prerequisites + Microsoft repo + PowerShell
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y wget apt-transport-https software-properties-common && \
     wget -q https://packages.microsoft.com/config/ubuntu/24.04/packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
