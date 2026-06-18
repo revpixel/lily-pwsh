@@ -19,6 +19,10 @@ This launches a clean PowerShell sandbox with the lily‑pwsh environment precon
 - Optional persistent data directory via bind mount
 - Works cleanly from Windows Terminal using SSH keys
 
+>🧩 **Dependency Note:** ```lily-pwsh``` does not fork, vendor, or reference the Microsoft [PowerShell](https://github.com/PowerShell/PowerShell) GitHub Repository.
+The container simply installs the latest stable PowerShell runtime from Microsoft’s official package feed.
+No upstream source code is included or modified — this is a clean runtime environment, not a PowerShell derivative.
+
 ## ⚠️ Prerequisites
 This project assumes:
 
