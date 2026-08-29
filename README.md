@@ -1,16 +1,27 @@
 ## lily-pwsh
-**A clean, minimal, zero‑drift PowerShell container built on Ubuntu 24.04.**
+**A clean, minimal, zero‑drift PowerShell container built on Ubuntu 26.04.**
 
 lily-pwsh is a sterile, reproducible PowerShell environment designed for people who want a predictable shell without host contamination, leftover apt cache, or the bloat of full Linux installs. It’s intentionally simple: build it, run it, throw it away. The image is the only persistent artifact.
 
+## 🚀 Quick Run (Prebuilt Container)
+If you just want to run the prebuilt container:
+```
+docker run -it ghcr.io/revpixel/lily-pwsh:latest
+```
+This launches a clean PowerShell sandbox with the lily‑pwsh environment preconfigured.
+
 ## ✨ Features
-**Minimal Ubuntu 24.04 base**
+**Minimal Ubuntu 26.04 base**
 - Correct Microsoft repo for PowerShell
 - No leftover apt cache or build debris
 - Starts directly in pwsh
 - Ephemeral by design — containers are disposable
 - Optional persistent data directory via bind mount
 - Works cleanly from Windows Terminal using SSH keys
+
+>🧩 **Dependency Note:** ```lily-pwsh``` does not fork, vendor, or reference the Microsoft [PowerShell](https://github.com/PowerShell/PowerShell) GitHub Repository.
+The container simply installs the latest stable PowerShell runtime from Microsoft’s official package feed.
+No upstream source code is included or modified — this is a clean runtime environment, not a PowerShell derivative.
 
 ## ⚠️ Prerequisites
 This project assumes:
@@ -26,11 +37,11 @@ chmod +x scripts/<scriptname>
 ## 📦 Repository Contents
 ```
 lily-pwsh/
-└── docs/
-    └── Install‑AzureModules.ps1 — README.md
-    └── rebuild-scripts-README.md
-└── examples/
-    └── run-interactive.md
+├── docs/
+│   └── Install‑AzureModules.ps1 — README.md
+│   └── rebuild-scripts-README.md
+├──  examples/
+│   └── run-interactive.md
 ├── scripts/
 │   ├── Install-AzureModules.ps1
 │   ├── rebuild.sh
@@ -41,7 +52,7 @@ lily-pwsh/
 ## 🔧 Dockerfile Reminder Path
 The Dockerfile includes a startup reminder:
 ```
-CMD ["-NoLogo", "-Command", "Write-Host 'Reminder: Run ./mnt/data/bootstrap/Install-AzureModules.ps1' -ForegroundColor Yellow; pwsh"]
+CMD ["-NoLogo", "-Command", "Write-Host 'Reminder: Run ./mnt/repo-scripts/Install-AzureModules.ps1' -ForegroundColor Yellow; pwsh"]
 ```
 This prints a message every time the container starts, reminding you to run your module‑install script from the persistent data mount.
 
@@ -78,7 +89,7 @@ I run this container from Windows Terminal using SSH keys to authenticate to my 
 Example Windows Terminal profile command:
 
 ```
-ssh -t <your-linux-user>@<your-linux-host> /home/<your-linux-user>/run-pwsh.sh
+ssh -t <your-linux-user>@<your-linux-host> /home/<your-linux-user>/lily-pwsh/scripts/run-pwsh.sh
 ```
 
 If someone needs SSH keys:
@@ -87,8 +98,7 @@ ssh-keygen -t ed25519 -C "your_email@example.com"
 ssh-copy-id your-linux-host
 ```
 After that, Windows Terminal launches the container instantly with no prompts.
-<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/d935604a-97b9-4a60-a94f-19ae3c6f21d9" />
-
+<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/bc957325-05a5-4f76-83ad-ad7b119d3978" />
 
 ## 🧰 Installing PowerShell Modules (Persistent Bootstrap Script)
 This container is intentionally sterile — no modules are baked into the image.
@@ -99,8 +109,6 @@ A helper script is included in the repo:
 ```
 scripts/Install-AzureModules.ps1
 ```
-Your run script automatically syncs this into your persistent bootstrap directory, so you don’t need to copy anything manually.
-
 Run it inside the container:
 ```
 ./mnt/repo-scripts/Install-AzureModules.ps1
@@ -149,8 +157,7 @@ Use the Windows PowerShell 5.1 environment (pwsh5) if you still require them.
 
 
 You can run this script as often as you want to refresh or update modules without rebuilding the container. This keeps the image sterile while giving you a fully loaded, always‑current admin shell.
-<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/747135b4-81dc-4c8d-b244-2ddfa1f97ca7" />
-
+<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/cf9dccb1-1a54-4832-b055-09e4ba90f9dc" />
 
 **📘 Full Documentation for Install‑AzureModules.ps1**
 A full, detailed README for the Azure module installer script — including module lists, expected warnings, environment philosophy, and a complete example run — is available here:

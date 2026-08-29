@@ -115,6 +115,14 @@ This script is part of a broader operational philosophy: clean baselines, determ
 
 Whether the VM is identity‑free or Entra‑joined, the goal is the same — eliminate drift, enforce consistency, and ensure every module behaves exactly as expected.
 
+## ▶️ Running This Script Outside a Sandbox VM
+If you’re using this script standalone — not inside a sterile VM or container — your local PowerShell execution policy may block it.
+You can temporarily bypass policy for this session only:
+```
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+./Install-AzureModules.ps1
+```
+
 ## 📄 Example Output
 > This example shows a *normal* module installation run.  
 > Some modules (like Microsoft.Graph) install multiple workload submodules as dependencies.  
