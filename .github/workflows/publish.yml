@@ -2,7 +2,7 @@ name: Build and Publish lily-pwsh Image
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
