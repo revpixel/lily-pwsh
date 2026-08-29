@@ -6,7 +6,7 @@ lily-pwsh is a sterile, reproducible PowerShell environment designed for people 
 ## 🚀 Quick Run (Prebuilt Container)
 If you just want to run the prebuilt container:
 ```
-docker run -it ghcr.io/revpixel/lily-pwsh:latest
+docker run -it ghcr.io/revpixel/lily-pwsh:stable
 ```
 This launches a clean PowerShell sandbox with the lily‑pwsh environment preconfigured.
 
