@@ -54,8 +54,8 @@ jobs:
 
       - name: Commit sterile image with script included
         run: |
-          docker commit $CONTAINER_ID ghcr.io/revpixel/lily-pwsh:latest
+          docker commit $CONTAINER_ID ghcr.io/revpixel/lily-pwsh:stable
 
       - name: Push image
         run: |
-          docker push ghcr.io/revpixel/lily-pwsh:latest
+          docker push ghcr.io/revpixel/lily-pwsh:stable
