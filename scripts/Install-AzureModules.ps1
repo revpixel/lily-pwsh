@@ -267,6 +267,3 @@ if ($PSVersionTable.PSEdition -eq 'Core' -and $modules -contains 'Microsoft.Onli
  
 Write-Host "`nReminder: Verify installed modules with:" -ForegroundColor Cyan
 Write-Host "Get-InstalledModule | Sort-Object Name | Format-Table Name, Version" -ForegroundColor Yellow
- 
-
-Unable to open file.
