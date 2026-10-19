@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write   # push the version git tag
+      contents: write   # create the version tag and GitHub Release
       packages: write   # push to GHCR
 
     env:
@@ -27,13 +27,20 @@ jobs:
 
       # Version = MAJOR.MINOR from the VERSION file + this workflow's run number.
       # Every run gets a new patch number, including manual rebuilds with no code change.
+      # Event text (commit message, manual reason) is passed through env, never
+      # pasted into the script, so quotes or backticks in it can't break or
+      # inject into the shell.
       - name: Compute version
         id: ver
+        env:
+          REASON: ${{ github.event.inputs.reason || github.event.head_commit.message }}
         run: |
           BASE=$(tr -d '[:space:]' < VERSION)
           VERSION="${BASE}.${{ github.run_number }}"
+          REASON_LINE="${REASON%%$'\n'*}"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "Building lily-pwsh v$VERSION (${{ github.event_name }}: ${{ github.event.inputs.reason || github.event.head_commit.message }})"
+          echo "reason=$REASON_LINE" >> "$GITHUB_OUTPUT"
+          echo "Building lily-pwsh v$VERSION ($GITHUB_EVENT_NAME: $REASON_LINE)"
 
       - name: Sanity check GHCR secret
         run: |
@@ -54,6 +61,16 @@ jobs:
       - name: Build base image (sterile)
         run: |
           docker build -t lily-base .
+
+      # Record what actually went into this build, for the release notes.
+      - name: Read versions from the image
+        id: contents
+        run: |
+          PWSH_VERSION=$(docker run --rm lily-base -NoProfile -NoLogo -Command '$PSVersionTable.PSVersion.ToString()')
+          OS_NAME=$(docker run --rm --entrypoint sh lily-base -c '. /etc/os-release && echo "$PRETTY_NAME"')
+          echo "pwsh=$PWSH_VERSION" >> "$GITHUB_OUTPUT"
+          echo "os=$OS_NAME" >> "$GITHUB_OUTPUT"
+          echo "PowerShell $PWSH_VERSION on $OS_NAME"
 
       - name: Create and start container
         id: container
@@ -88,9 +105,82 @@ jobs:
           docker push "$IMAGE:${{ steps.ver.outputs.version }}"
           docker push "$IMAGE:stable"
 
-      # Tag the commit that was built, so the repo shows every published version.
-      - name: Tag release in git
+      # Create the version tag and a GitHub Release with run instructions, and
+      # mark it Latest so the repo homepage shows it.
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.ver.outputs.version }}
+          REASON: ${{ steps.ver.outputs.reason }}
+          PWSH_VERSION: ${{ steps.contents.outputs.pwsh }}
+          OS_NAME: ${{ steps.contents.outputs.os }}
         run: |
-          TAG="v${{ steps.ver.outputs.version }}"
-          git tag "$TAG"
-          git push origin "$TAG"
+          BUILT=$(date -u +%Y-%m-%d)
+          SHORT_SHA="${GITHUB_SHA::7}"
+
+          # Quoted heredoc: nothing inside is expanded by the shell; values are
+          # filled in afterwards, so backticks in the markdown are safe.
+          cat > release-notes.md <<'NOTES'
+          ## lily-pwsh v__VERSION__
+
+          **PowerShell __PWSH__** on **__OS__**, built __BUILT__ from [`__SHA__`](__REPO_URL__/commit/__FULLSHA__).
+          Build reason: __REASON__
+
+          ### 🚀 Quick Run
+          This exact build:
+          ```
+          docker run --rm -it ghcr.io/revpixel/lily-pwsh:__VERSION__
+          ```
+          Always the newest build:
+          ```
+          docker run --rm -it ghcr.io/revpixel/lily-pwsh:stable
+          ```
+
+          ### 💾 Keep your files and modules between runs
+          ```
+          docker run --rm -it --init \
+            -v "$HOME/pwsh-data:/mnt/data" \
+            -v "$HOME/pwsh-data/modules:/root/.local/share/powershell/Modules" \
+            ghcr.io/revpixel/lily-pwsh:__VERSION__
+          ```
+          Then install the Azure / Microsoft 365 modules inside the container:
+          ```
+          /mnt/repo-scripts/Install-AzureModules.ps1
+          ```
+
+          ### 📦 Image tags
+          - `ghcr.io/revpixel/lily-pwsh:__VERSION__` (this build, never changes)
+          - `ghcr.io/revpixel/lily-pwsh:stable` (moves to every new build)
+
+          ### ✅ Included
+          - __OS__ with current package updates as of __BUILT__
+          - PowerShell __PWSH__ from Microsoft's official package feed
+          - `Install-AzureModules.ps1` at `/mnt/repo-scripts/`
+          - No modules baked in, no apt cache
+
+          📘 [Full README](__REPO_URL__#readme)
+
+          NOTES
+
+          # Fill in the values.
+          esc() { printf '%s' "$1" | sed -e 's/[\/&|]/\\&/g'; }
+          sed -i \
+            -e "s|__VERSION__|$(esc "$VERSION")|g" \
+            -e "s|__PWSH__|$(esc "$PWSH_VERSION")|g" \
+            -e "s|__OS__|$(esc "$OS_NAME")|g" \
+            -e "s|__BUILT__|$(esc "$BUILT")|g" \
+            -e "s|__REASON__|$(esc "$REASON")|g" \
+            -e "s|__SHA__|$(esc "$SHORT_SHA")|g" \
+            -e "s|__FULLSHA__|$(esc "$GITHUB_SHA")|g" \
+            -e "s|__REPO_URL__|$(esc "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY")|g" \
+            release-notes.md
+
+          # --generate-notes appends GitHub's "What's changed" list (commits since
+          # the previous release) below our notes. --latest marks this release as
+          # the one the repo homepage shows.
+          gh release create "v$VERSION" \
+            --target "$GITHUB_SHA" \
+            --title "lily-pwsh v$VERSION" \
+            --notes-file release-notes.md \
+            --generate-notes \
+            --latest
