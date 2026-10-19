@@ -157,7 +157,8 @@ Use the Windows PowerShell 5.1 environment (pwsh5) if you still require them.
 
 
 You can run this script as often as you want to refresh or update modules without rebuilding the container. This keeps the image sterile while giving you a fully loaded, always‑current admin shell.
-<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/24857ed3-7626-4d53-b7eb-8c21539bc841" />
+<img width="1115" height="1061" alt="image" src="https://github.com/user-attachments/assets/c1e9bdac-71dd-45ce-9cd6-edffd7b29370" />
+
 
 
 **📘 Full Documentation for Install‑AzureModules.ps1**
