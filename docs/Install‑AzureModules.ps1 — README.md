@@ -1,200 +1,203 @@
-## 📝 Purpose
-This script installs and updates all required PowerShell modules for Microsoft 365, Azure, and Microsoft Graph administration in a clean, reproducible environment. It is designed for use in sandbox VMs where deterministic module state is critical for reliable cloud administration work.
+# Install-AzureModules.ps1
 
-## 🧭 Where This Script Is Used
-🧪 **Sterile sandbox VMs**
-These are clean, identity‑free virtual machines used for:
+Installs, reports on, and cleans up the PowerShell modules used for Azure, Microsoft Graph and Microsoft 365 administration. It detects which PowerShell it is running in and only handles the modules that belong there, so the same script works on a Windows workstation, a Windows VM, and a Linux container.
 
-- Microsoft 365 and Azure administration
-- Graph API testing
-- Dev/test identities
-- Disposable experimentation
-- Client‑agnostic work where no tenant identity should be present
+It is built for repeatable environments: sandboxes, VM baselines, and container images where you want exactly one version of each module and nothing left over from earlier installs.
 
-These VMs are intentionally isolated and rebuilt frequently. This script ensures the PowerShell module layer inside them is just as sterile and predictable as the VM itself.
+## Contents
 
-## 🔐 Identity‑bound sandboxes
-Some workflows require a VM that is joined to an Entra tenant — for example, when:
+- [Requirements](#requirements)
+- [Quick start](#quick-start)
+- [Host profiles](#host-profiles)
+- [Modes](#modes)
+- [Parameters](#parameters)
+- [Sections](#sections)
+- [Scopes and what the script can and cannot remove](#scopes-and-what-the-script-can-and-cannot-remove)
+- [Running in a container](#running-in-a-container)
+- [Exit codes](#exit-codes)
+- [Notes and limitations](#notes-and-limitations)
 
-- Conditional Access blocks Cloud Shell
-- Device compliance requires a registered or hybrid‑joined device
-- External or unmanaged devices cannot authenticate
-- You need to test behavior under real tenant policies
-- These identity‑bound sandboxes are still controlled environments, but they carry an Entra identity for testing or client‑specific operations. The script ensures the module stack in these VMs remains clean and consistent even when tenant policies are strict.
-- This is the same pattern used when building controlled environments — compliant, isolated, and predictable.
+## Requirements
 
-## 🧩 Why This Script Exists
-Microsoft’s module ecosystem is fragmented:
+| Host | Requirement |
+|---|---|
+| PowerShell 7 | 7.4 or later, major version 7 only. PSResourceGet ships in the box. |
+| Windows PowerShell | 5.1 with .NET Framework 4.7.2 or later. PSResourceGet is installed automatically on first run. |
+| Network | Access to the PowerShell Gallery, or your own feed via `-Repository`. `-Report` and `-ShowPlan` work offline. |
+| Elevation | Only for `-Scope AllUsers` or `-Scope Both`: Administrator on Windows, root on Linux. |
 
-- Graph has deep GA + Beta dependency trees
-- Azure has a wide, multi‑module dependency chain
-- PnP.PowerShell is large and slow to load
+Any other host (PowerShell 6.x, 7.0 to 7.3, a future 8.x, or Windows PowerShell older than 5.1) is refused with exit code 2.
 
-Legacy modules (AzureAD, AzureADPreview, MSOnline) are deprecated but still required in some tenants
+## Quick start
 
-Version drift between snapshots or rebuilds can cause unpredictable behavior.
-This script eliminates that by enforcing a deterministic module baseline every time it runs.
+```powershell
+# See what would happen on this host. Changes nothing.
+./Install-AzureModules.ps1 -ShowPlan
 
-## ⚙️ What the Script Does
-
-### Module hygiene
-This script enforces a clean, deterministic module environment by:
-
-- Ensuring PSGallery is trusted
-- Checking each module against the latest available version
-- Removing all installed versions to prevent drift
-- Installing fresh copies of each module
-- Pulling in all dependencies cleanly
-- Guaranteeing consistent results across rebuilds and containers
-
-### Modules included (Modern + Workloads)
-
-- **Az** (Azure Resource Manager)
-- **Microsoft.Graph** (GA)
-- **Microsoft.Graph.Beta** (Beta)
-- **Microsoft Graph workload modules**, including:
-  - Authentication  
-  - Directory Management  
-  - Sign‑Ins  
-  - Security  
-  - Reports  
-  - Device Management  
-  - Identity Governance  
-  - Teams  
-- **ExchangeOnlineManagement** (EXO V3)
-- **MicrosoftTeams**
-- **PnP.PowerShell**
-
-### Legacy modules removed
-The following deprecated modules are intentionally excluded:
-
-- AzureAD  
-- AzureADPreview  
-- MSOnline  
-
-These modules are not supported in PowerShell 7 and are scheduled for retirement.
-
-### Why this matters
-The script ensures:
-
-- zero‑drift module baselines  
-- reproducible environments  
-- clean dependency trees  
-- predictable behavior in containers and VMs  
-
-This keeps the environment **sterile** and fully aligned with modern Microsoft 365 administration.
-
-
-## ⏳ Why It’s Slow — On Purpose
-A full run takes 10–15 minutes, even when everything is already installed.
-
-- This is intentional.
-- The script is slow because it:
-- Enumerates every installed version
-- Uninstalls them
-- Resolves dependency trees
-- Reinstalls everything cleanly
-- Walks the entire Graph GA + Beta module set
-- Pulls Azure and PnP’s heavy dependency chains
-
-This is the cost of reproducibility.
-
-The payoff is a module environment that behaves the same way every time, regardless of VM rebuilds, snapshots, or tenant context.
-
-## 🎯 When to Use It
-Use this script when you need:
-
-- A sterile, predictable PowerShell environment
-- A reproducible baseline across multiple VMs
-- A clean module stack for client tenant work
-- A compliant environment for tenants with strict CA/device policies
-- A safe place to run Graph, Azure, EXO, or legacy commands without polluting your main machine
-
-## 📌 Summary
-This script is part of a broader operational philosophy: clean baselines, deterministic environments, and predictable behavior across all your admin sandboxes.
-
-Whether the VM is identity‑free or Entra‑joined, the goal is the same — eliminate drift, enforce consistency, and ensure every module behaves exactly as expected.
-
-## ▶️ Running This Script Outside a Sandbox VM
-If you’re using this script standalone — not inside a sterile VM or container — your local PowerShell execution policy may block it.
-You can temporarily bypass policy for this session only:
-```
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+# Install everything for this host (current user).
 ./Install-AzureModules.ps1
+
+# See what is installed.
+./Install-AzureModules.ps1 -Report
+
+# Remove modules, choosing sections from a menu (Enter = all).
+./Install-AzureModules.ps1 -Remove
 ```
 
-## 📄 Example Output
-> This example shows a *normal* module installation run.  
-> Some modules (like Microsoft.Graph) install multiple workload submodules as dependencies.  
-> On subsequent passes, those submodules may report “Already up to date” before being removed  
-> and reinstalled cleanly. This is expected behavior and ensures a zero‑drift module baseline.
+On Windows you run it twice to cover both shells: once from `pwsh` for the modern modules and once from `powershell.exe` for the modules that still need Windows PowerShell. The script says this at the end of each run.
+
+## Host profiles
+
+The script picks one of three profiles from the PowerShell it is running in.
+
+| Profile | Host | Installs |
+|---|---|---|
+| `PwshLinux` | pwsh 7.4+ on Linux (macOS uses this profile too) | Az, Microsoft.Graph, Microsoft.Graph.Beta, ExchangeOnlineManagement, MicrosoftTeams, PnP.PowerShell, MicrosoftPowerBIMgmt (optional) |
+| `PwshWindows` | pwsh 7.4+ on Windows | Same set as `PwshLinux` |
+| `WinPS` | Windows PowerShell 5.1 | Only the modules that need it: Microsoft.Online.SharePoint.PowerShell, plus Microsoft.PowerApps.Administration.PowerShell, Microsoft.PowerApps.PowerShell and MSCommerce (optional) |
+
+The two pwsh profiles install the same modules today. They are separate so a platform-specific module can be added to one without affecting the other.
+
+### Cleanup-only modules
+
+Every module in the catalog is known on every host. Where a module's profile does not match, it is never installed there, but `-Report` lists it and `-Remove` can remove it. That catches things like an old `Microsoft.Graph` install sitting in Windows PowerShell's module folder.
+
+The **Legacy** section (AzureAD, AzureADPreview, MSOnline) is cleanup-only everywhere. These modules are deprecated and the script never installs them.
+
+## Modes
+
+Choose one mode per run.
+
+### Install (default)
+
+```powershell
+./Install-AzureModules.ps1 [-CoreOnly] [-SkipUninstall] [-Scope CurrentUser|AllUsers] [-Repository <name>]
 ```
-PowerShell 7.6.1
-PS /> ./mnt/repo-scripts/Install-AzureModules.ps1
-Preparing modern sandbox environment...
 
-Processing Az...
-Installing/Updating Az...
+1. Looks up every planned module in the repository first. If **any** lookup fails, the script stops before uninstalling anything, so a gallery outage never leaves you with an empty environment.
+2. Removes every installed version of each planned module in the target scope. This includes the sub-modules of meta packages (`Az.*`, `Microsoft.Graph*`, `MicrosoftPowerBIMgmt.*`), which a plain uninstall of the meta package leaves behind.
+3. Installs exactly the versions found in step 1 and verifies each one.
+4. Prints a summary and warns about copies in the other scope, copies it cannot manage, and cleanup-only modules present on the host.
 
-Processing Microsoft.Graph...
-Installing/Updating Microsoft.Graph...
+Install never touches cleanup-only modules. It names them and gives you the `-Remove` command instead.
 
-Processing Microsoft.Graph.Beta...
-Installing/Updating Microsoft.Graph.Beta...
+### Show plan
 
-Processing Microsoft.Graph.Authentication...
-Microsoft.Graph.Authentication: Already up to date (2.36.1)
-Removing old versions of Microsoft.Graph.Authentication...
-Installing/Updating Microsoft.Graph.Authentication...
-
-Processing Microsoft.Graph.Identity.DirectoryManagement...
-Microsoft.Graph.Identity.DirectoryManagement: Already up to date (2.36.1)
-Removing old versions of Microsoft.Graph.Identity.DirectoryManagement...
-Installing/Updating Microsoft.Graph.Identity.DirectoryManagement...
-
-Processing Microsoft.Graph.Identity.SignIns...
-Microsoft.Graph.Identity.SignIns: Already up to date (2.36.1)
-Removing old versions of Microsoft.Graph.Identity.SignIns...
-Installing/Updating Microsoft.Graph.Identity.SignIns...
-
-Processing Microsoft.Graph.Security...
-Microsoft.Graph.Security: Already up to date (2.36.1)
-Removing old versions of Microsoft.Graph.Security...
-Installing/Updating Microsoft.Graph.Security...
-
-Processing Microsoft.Graph.Reports...
-Microsoft.Graph.Reports: Already up to date (2.36.1)
-Removing old versions of Microsoft.Graph.Reports...
-Installing/Updating Microsoft.Graph.Reports...
-
-Processing Microsoft.Graph.DeviceManagement...
-Microsoft.Graph.DeviceManagement: Already up to date (2.36.1)
-Removing old versions of Microsoft.Graph.DeviceManagement...
-Installing/Updating Microsoft.Graph.DeviceManagement...
-
-Processing Microsoft.Graph.Identity.Governance...
-Microsoft.Graph.Identity.Governance: Already up to date (2.36.1)
-Removing old versions of Microsoft.Graph.Identity.Governance...
-Installing/Updating Microsoft.Graph.Identity.Governance...
-
-Processing Microsoft.Graph.Teams...
-Microsoft.Graph.Teams: Already up to date (2.36.1)
-Removing old versions of Microsoft.Graph.Teams...
-Installing/Updating Microsoft.Graph.Teams...
-
-Processing ExchangeOnlineManagement...
-Installing/Updating ExchangeOnlineManagement...
-
-Processing MicrosoftTeams...
-Installing/Updating MicrosoftTeams...
-
-Processing PnP.PowerShell...
-Installing/Updating PnP.PowerShell...
-
-All modern modules installed and updated.
-Reminder: Verify installed modules with:
-Get-InstalledModule | Sort-Object Name | Format-Table Name, Version
-
-PS />
+```powershell
+./Install-AzureModules.ps1 -ShowPlan
 ```
-> The script prints a reminder to list installed modules if you want to verify the final state. 
+
+Prints the detected profile, the modules that would be installed, and the cleanup-only modules for this host. Changes nothing and needs no network.
+
+### Report
+
+```powershell
+./Install-AzureModules.ps1 -Report
+```
+
+Lists installed modules from the catalog, grouped by section, with columns for:
+
+- **CurrentUser**: versions in the per-user module folder
+- **AllUsers**: versions in the machine-wide module folder
+- **Other**: copies that load on this host but that the script cannot remove (see below)
+- **Notes**: `cleanup only`, `multiple copies`, `optional`
+
+Meta-package sections also show a sub-module count. Installable modules are always listed; cleanup-only modules appear only when a copy is found. Works offline and needs no elevation.
+
+### Remove
+
+```powershell
+# Interactive: numbered menu of installed sections, Enter = all, then a y/N confirmation.
+./Install-AzureModules.ps1 -Remove
+
+# Scripted: no prompts.
+./Install-AzureModules.ps1 -Remove -Section Graph,Teams
+./Install-AzureModules.ps1 -Remove -Section All -Scope Both
+
+# Preview.
+./Install-AzureModules.ps1 -Remove -Section Legacy -WhatIf
+```
+
+The menu only lists sections that have something installed and marks cleanup-only sections. Without `-Section` and without an interactive console (for example `docker run` without `-it`), the script exits with code 2 rather than waiting for input.
+
+## Parameters
+
+| Parameter | Modes | Description |
+|---|---|---|
+| `-CoreOnly` | Install | Skip optional modules (Power BI on pwsh; Power Apps and MSCommerce on Windows PowerShell). |
+| `-SkipUninstall` | Install | Install in place without removing existing versions first. Faster, but you may end up with more than one version. |
+| `-ShowPlan` | Install | Print the plan and exit. |
+| `-Report` | Report | Show installed state and exit. |
+| `-Remove` | Remove | Remove modules by section. |
+| `-Section` | Remove | One or more section names, or `All`. Comma-separated values work both inside PowerShell and from `pwsh -File`. |
+| `-Scope` | Install, Remove | `CurrentUser` (default) or `AllUsers`; Remove also accepts `Both`. AllUsers and Both need elevation. |
+| `-Repository` | Install | PSResourceGet repository to use. Defaults to `PSGallery`; point it at an internal mirror or local feed for offline or controlled builds. |
+| `-WhatIf` | Install, Remove | Show what would be uninstalled or installed without doing it. |
+
+## Sections
+
+Used by `-Report`, the `-Remove` menu, and `-Section`. Each section belongs to exactly one profile, so removing a cleanup-only section never removes a module the host uses.
+
+| Section | Modules | Installed on |
+|---|---|---|
+| `Azure` | Az (and all `Az.*`) | pwsh |
+| `Graph` | Microsoft.Graph, Microsoft.Graph.Beta (and all `Microsoft.Graph*`) | pwsh |
+| `Exchange` | ExchangeOnlineManagement | pwsh |
+| `Teams` | MicrosoftTeams | pwsh |
+| `SharePoint` | PnP.PowerShell | pwsh |
+| `PowerBI` | MicrosoftPowerBIMgmt (and all `MicrosoftPowerBIMgmt.*`) | pwsh (optional) |
+| `SPOClassic` | Microsoft.Online.SharePoint.PowerShell | Windows PowerShell |
+| `PowerPlatform` | Microsoft.PowerApps.Administration.PowerShell, Microsoft.PowerApps.PowerShell | Windows PowerShell (optional) |
+| `Commerce` | MSCommerce | Windows PowerShell (optional) |
+| `Legacy` | AzureAD, AzureADPreview, MSOnline | Never (cleanup only) |
+
+The `Microsoft.Graph*` pattern also matches any other module whose name starts with `Microsoft.Graph`.
+
+## Scopes and what the script can and cannot remove
+
+A module can be in three kinds of places:
+
+| Where | Examples | Handled by |
+|---|---|---|
+| CurrentUser folder | `~/Documents/PowerShell/Modules`, `~/Documents/WindowsPowerShell/Modules`, `~/.local/share/powershell/Modules` | `-Scope CurrentUser` (default) |
+| AllUsers folder | `C:\Program Files\PowerShell\Modules`, `C:\Program Files\WindowsPowerShell\Modules`, `/usr/local/share/powershell/Modules` | `-Scope AllUsers` or `-Scope Both`, elevated |
+| Other | MSI installs (such as the SharePoint Online Management Shell installer), hand-copied folders, or modules in another host's folder | Reported only |
+
+The script removes only what PowerShellGet or PSResourceGet installed in the host's own folders, including modules installed earlier with `Install-Module`. Copies in the **Other** column are listed with their path and the reason:
+
+- **no package metadata**: uninstall with its installer if it has one, otherwise delete the folder.
+- **outside this host's module folders**: for example, pwsh on Windows also loads modules from Windows PowerShell's folder. Run `-Remove` from the PowerShell that owns that folder.
+
+The script never deletes these itself.
+
+CurrentUser comes before AllUsers on the module path, so a CurrentUser copy loads instead of an AllUsers copy of the same module. The install summary warns when that applies.
+
+## Running in a container
+
+Containers usually run as root, so `-Scope AllUsers` works and makes the modules available to any user in the container.
+
+```bash
+pwsh -NoProfile -File ./Install-AzureModules.ps1 -Scope AllUsers
+pwsh -NoProfile -File ./Install-AzureModules.ps1 -Report
+pwsh -NoProfile -File ./Install-AzureModules.ps1 -Remove -Section All -Scope Both
+```
+
+The interactive menu needs a TTY (`docker run -it`). Use `-Section` for unattended runs. A non-zero exit code fails the build step.
+
+## Exit codes
+
+| Code | Meaning |
+|---|---|
+| 0 | Success, or `-ShowPlan` / `-Report`, or nothing to do |
+| 1 | A module failed to resolve, install, or uninstall cleanly; the repository is not registered; or PSResourceGet could not be set up |
+| 2 | Unsupported PowerShell host, unknown `-Section` name, invalid `-Scope` for the mode, AllUsers scope without elevation, or `-Remove` with no `-Section` and no interactive console |
+
+## Notes and limitations
+
+- **"Latest" is not pinned across runs.** Within one run, every module installs the exact version found during lookup. A run next week can install newer versions. For fully pinned builds, point `-Repository` at a feed that holds the versions you want.
+- **The full install is slow.** Microsoft.Graph and Microsoft.Graph.Beta together are well over a hundred modules, and a re-run removes and reinstalls them. `-CoreOnly` and `-SkipUninstall` shorten it.
+- **Loaded modules can block removal on Windows.** Run from a fresh session (`pwsh -NoProfile` or `powershell.exe -NoProfile`) if the summary reports leftovers.
+- **PnP.PowerShell needs your own Entra ID app registration** (`Register-PnPEntraIDApp`). The shared PnP Management Shell app no longer exists.
+- **Trust is per call.** Installs use `-TrustRepository` rather than changing the repository's saved trust setting.
+- **The file is plain ASCII on purpose.** Windows PowerShell 5.1 misreads UTF-8 files without a BOM, and characters like an em dash can break string parsing. Keep it ASCII if you edit it.
+- **Run it as a script, not dot-sourced.** It uses `exit` to return status codes, which would close a dot-sourced session.
