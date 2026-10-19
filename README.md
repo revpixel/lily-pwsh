@@ -98,7 +98,7 @@ ssh-keygen -t ed25519 -C "your_email@example.com"
 ssh-copy-id your-linux-host
 ```
 After that, Windows Terminal launches the container instantly with no prompts.
-<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/bc957325-05a5-4f76-83ad-ad7b119d3978" />
+<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/5835b6a1-fa1a-453f-aaf1-c1da5fa029f3" />
 
 ## 🧰 Installing PowerShell Modules (Persistent Bootstrap Script)
 This container is intentionally sterile — no modules are baked into the image.
@@ -157,7 +157,8 @@ Use the Windows PowerShell 5.1 environment (pwsh5) if you still require them.
 
 
 You can run this script as often as you want to refresh or update modules without rebuilding the container. This keeps the image sterile while giving you a fully loaded, always‑current admin shell.
-<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/cf9dccb1-1a54-4832-b055-09e4ba90f9dc" />
+<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/24857ed3-7626-4d53-b7eb-8c21539bc841" />
+
 
 **📘 Full Documentation for Install‑AzureModules.ps1**
 A full, detailed README for the Azure module installer script — including module lists, expected warnings, environment philosophy, and a complete example run — is available here:
