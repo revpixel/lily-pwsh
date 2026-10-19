@@ -4,19 +4,37 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Why this rebuild (e.g. "Ubuntu security updates")'
+        required: false
+        default: 'Manual rebuild'
 
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
-      packages: write
+      contents: write   # push the version git tag
+      packages: write   # push to GHCR
+
+    env:
+      IMAGE: ghcr.io/revpixel/lily-pwsh
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-        
+
+      # Version = MAJOR.MINOR from the VERSION file + this workflow's run number.
+      # Every run gets a new patch number, including manual rebuilds with no code change.
+      - name: Compute version
+        id: ver
+        run: |
+          BASE=$(tr -d '[:space:]' < VERSION)
+          VERSION="${BASE}.${{ github.run_number }}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Building lily-pwsh v$VERSION (${{ github.event_name }}: ${{ github.event.inputs.reason || github.event.head_commit.message }})"
+
       - name: Sanity check GHCR secret
         run: |
           if [ -z "${{ secrets.ghcr_namespace }}" ]; then
@@ -52,10 +70,27 @@ jobs:
         run: |
           docker cp scripts/Install-AzureModules.ps1 $CONTAINER_ID:/mnt/repo-scripts/Install-AzureModules.ps1
 
+      # Commit once under the version tag (with OCI labels so the image says what it is),
+      # then point :stable at the same image.
       - name: Commit sterile image with script included
         run: |
-          docker commit $CONTAINER_ID ghcr.io/revpixel/lily-pwsh:stable
+          VERSION="${{ steps.ver.outputs.version }}"
+          docker commit \
+            --change "LABEL org.opencontainers.image.version=$VERSION" \
+            --change "LABEL org.opencontainers.image.revision=$GITHUB_SHA" \
+            --change "LABEL org.opencontainers.image.created=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --change "LABEL org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" \
+            $CONTAINER_ID "$IMAGE:$VERSION"
+          docker tag "$IMAGE:$VERSION" "$IMAGE:stable"
 
       - name: Push image
         run: |
-          docker push ghcr.io/revpixel/lily-pwsh:stable
+          docker push "$IMAGE:${{ steps.ver.outputs.version }}"
+          docker push "$IMAGE:stable"
+
+      # Tag the commit that was built, so the repo shows every published version.
+      - name: Tag release in git
+        run: |
+          TAG="v${{ steps.ver.outputs.version }}"
+          git tag "$TAG"
+          git push origin "$TAG"
