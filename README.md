@@ -23,7 +23,33 @@ The prebuilt image already includes the module installer at `/mnt/repo-scripts/I
 |---|---|---|
 | `:stable` | `main` | Everyday use |
 | `:dev` | `dev` | Trying upcoming changes before they reach `:stable` |
-| `:1.0.35`, `:1.0-dev.7`, … | One exact build | Pinning a version (never changes) |
+| `:2.0.40`, `:2.0-dev.3`, … | One exact build | Pinning a version (never changes) |
+
+## 🆕 What's new in 2.0
+
+**lily-pwsh 2.0 moves the base image from Ubuntu 24.04 to Ubuntu 26.04 LTS.**
+
+The major version number changed because the operating system under PowerShell changed. A new Ubuntu LTS brings newer system libraries (ICU, OpenSSL, glibc), and those are what PowerShell and its modules load at runtime. Most scripts won't notice, but anything that depends on the OS underneath could behave differently. A major version makes that change visible, and lets you pin 1.x if you need to stay on 24.04.
+
+| | 1.x | 2.x |
+|---|---|---|
+| Base image | Ubuntu 24.04 LTS | Ubuntu 26.04 LTS |
+| PowerShell feed | Microsoft's Ubuntu 24.04 repo | Microsoft's Ubuntu 26.04 repo (native, no workaround) |
+| CPU architecture | amd64 | amd64 only (Microsoft has no arm64 PowerShell package for 26.04 yet) |
+
+2.0 also adds a dev channel: the `dev` branch publishes `:dev` images and pre-releases, so changes can be tested live before they reach `:stable`.
+
+**Upgrading from 1.x**
+
+- **`:stable` moves to 2.x automatically.** To stay on Ubuntu 24.04, pin the last 1.x build instead: `ghcr.io/revpixel/lily-pwsh:1.0.38`.
+- **Re-run the module installer once.** Modules in your persistent `~/pwsh-data/modules` folder carry over, but a fresh install makes sure each one is the current version and works on 26.04:
+  ```
+  /mnt/repo-scripts/Install-AzureModules.ps1
+  ```
+- **Update your checkout** (`git pull` in `~/lily-pwsh`). If you mount the repo's `scripts/` folder (as `run-pwsh.sh` does), it overrides the installer built into the image, so an old checkout means an old installer.
+- **On ARM hosts** (Raspberry Pi, Apple Silicon), stay on `1.0.38` until Microsoft publishes arm64 PowerShell for 26.04.
+
+Tested before release: PowerShell 7.7.0 on Ubuntu 26.04.1 LTS, with Az, Microsoft Graph and Graph Beta, Exchange Online, Microsoft Teams, PnP.PowerShell and Power BI all installing and loading.
 
 ## ✨ Features
 **Minimal Ubuntu 26.04 base**

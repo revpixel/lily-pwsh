@@ -22,7 +22,7 @@ docker run --rm -it ghcr.io/revpixel/lily-pwsh:stable
 
 `--rm` deletes the container when you exit, so nothing you do here is kept.
 
-> **Tags:** `:stable` always points to the newest build of `main`. `:dev` points to the newest build of the `dev` branch, for trying upcoming changes. To stay on one exact build, use its version tag (for example `:1.0.12` or `:1.0-dev.3`). The [Releases](https://github.com/revpixel/lily-pwsh/releases) page lists each version, with dev builds marked as pre-releases. To pick up a newer `:stable`, run `docker pull ghcr.io/revpixel/lily-pwsh:stable`.
+> **Tags:** `:stable` always points to the newest build of `main`. `:dev` points to the newest build of the `dev` branch, for trying upcoming changes. To stay on one exact build, use its version tag (for example `:2.0.40` or `:2.0-dev.3`). The [Releases](https://github.com/revpixel/lily-pwsh/releases) page lists each version, with dev builds marked as pre-releases. To pick up a newer `:stable`, run `docker pull ghcr.io/revpixel/lily-pwsh:stable`.
 
 ## 💾 Persistent run
 

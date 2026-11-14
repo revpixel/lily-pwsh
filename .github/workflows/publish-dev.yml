@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v4
 
       # Version = MAJOR.MINOR from the VERSION file + "-dev." + this workflow's run
-      # number, e.g. 1.0-dev.7. The suffix keeps dev builds from ever sharing a
+      # number, e.g. 2.0-dev.7. The suffix keeps dev builds from ever sharing a
       # number with a stable build. Event text is passed through env, never pasted
       # into the script, so quotes or backticks in it can't break the shell.
       - name: Compute version
