@@ -14,6 +14,12 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Ship the module installer inside the image. A bind mount on /mnt/repo-scripts
+# (as run-pwsh.sh does) still overrides this copy with the live repo version.
+COPY scripts/Install-AzureModules.ps1 /mnt/repo-scripts/Install-AzureModules.ps1
+
 ENTRYPOINT ["pwsh"]
 
-CMD ["-NoLogo", "-Command", "Write-Host 'Reminder: Run ./mnt/repo-scripts/Install-AzureModules.ps1' -ForegroundColor Yellow; pwsh"]
+# -NoExit keeps this one shell open after the reminder, so `exit` leaves the container
+# directly instead of first dropping back into an outer pwsh.
+CMD ["-NoLogo", "-NoExit", "-Command", "Write-Host 'Reminder: Run /mnt/repo-scripts/Install-AzureModules.ps1' -ForegroundColor Yellow"]

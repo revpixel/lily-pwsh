@@ -58,47 +58,33 @@ jobs:
           username: revpixel
           password: ${{ secrets.ghcr_namespace }}
 
-      - name: Build base image (sterile)
+      # One build, tagged with the version and :stable, with OCI labels so the image
+      # says what it is. The Dockerfile COPYs the installer script in, so there is no
+      # container to start, copy into and commit afterwards.
+      - name: Build image
         run: |
-          docker build -t lily-base .
+          VERSION="${{ steps.ver.outputs.version }}"
+          docker build \
+            --label "org.opencontainers.image.version=$VERSION" \
+            --label "org.opencontainers.image.revision=$GITHUB_SHA" \
+            --label "org.opencontainers.image.created=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" \
+            -t "$IMAGE:$VERSION" \
+            -t "$IMAGE:stable" \
+            .
 
-      # Record what actually went into this build, for the release notes.
+      # Record what actually went into this build, for the release notes, and fail
+      # the build if the installer script is missing from the image.
       - name: Read versions from the image
         id: contents
         run: |
-          PWSH_VERSION=$(docker run --rm lily-base -NoProfile -NoLogo -Command '$PSVersionTable.PSVersion.ToString()')
-          OS_NAME=$(docker run --rm --entrypoint sh lily-base -c '. /etc/os-release && echo "$PRETTY_NAME"')
+          TAG="$IMAGE:${{ steps.ver.outputs.version }}"
+          docker run --rm --entrypoint test "$TAG" -f /mnt/repo-scripts/Install-AzureModules.ps1
+          PWSH_VERSION=$(docker run --rm "$TAG" -NoProfile -NoLogo -Command '$PSVersionTable.PSVersion.ToString()')
+          OS_NAME=$(docker run --rm --entrypoint sh "$TAG" -c '. /etc/os-release && echo "$PRETTY_NAME"')
           echo "pwsh=$PWSH_VERSION" >> "$GITHUB_OUTPUT"
           echo "os=$OS_NAME" >> "$GITHUB_OUTPUT"
           echo "PowerShell $PWSH_VERSION on $OS_NAME"
-
-      - name: Create and start container
-        id: container
-        run: |
-          CONTAINER_ID=$(docker create lily-base)
-          echo "CONTAINER_ID=$CONTAINER_ID" >> $GITHUB_ENV
-          docker start $CONTAINER_ID
-
-      - name: Create /mnt/repo-scripts inside container
-        run: |
-          docker exec $CONTAINER_ID mkdir -p /mnt/repo-scripts
-
-      - name: Copy installer script into container
-        run: |
-          docker cp scripts/Install-AzureModules.ps1 $CONTAINER_ID:/mnt/repo-scripts/Install-AzureModules.ps1
-
-      # Commit once under the version tag (with OCI labels so the image says what it is),
-      # then point :stable at the same image.
-      - name: Commit sterile image with script included
-        run: |
-          VERSION="${{ steps.ver.outputs.version }}"
-          docker commit \
-            --change "LABEL org.opencontainers.image.version=$VERSION" \
-            --change "LABEL org.opencontainers.image.revision=$GITHUB_SHA" \
-            --change "LABEL org.opencontainers.image.created=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            --change "LABEL org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" \
-            $CONTAINER_ID "$IMAGE:$VERSION"
-          docker tag "$IMAGE:$VERSION" "$IMAGE:stable"
 
       - name: Push image
         run: |

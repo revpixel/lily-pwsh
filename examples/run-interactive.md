@@ -6,7 +6,7 @@ This guide shows several ways to run the `lily-pwsh` container, from a simple lo
 ## 🚀 Quick Run (Prebuilt Container)
 If you just want to run the prebuilt container:
 ```
-docker run -it ghcr.io/revpixel/lily-pwsh:latest
+docker run --rm -it ghcr.io/revpixel/lily-pwsh:stable
 ```
 This launches a clean PowerShell sandbox with the lily‑pwsh environment preconfigured.
 
