@@ -17,6 +17,14 @@ docker run --rm -it --init \
 ```
 The prebuilt image already includes the module installer at `/mnt/repo-scripts/Install-AzureModules.ps1`.
 
+**Image tags**
+
+| Tag | Built from | Use it for |
+|---|---|---|
+| `:stable` | `main` | Everyday use |
+| `:dev` | `dev` | Trying upcoming changes before they reach `:stable` |
+| `:1.0.35`, `:1.0-dev.7`, … | One exact build | Pinning a version (never changes) |
+
 ## ✨ Features
 **Minimal Ubuntu 26.04 base**
 - PowerShell from Microsoft's official package feed
@@ -47,7 +55,8 @@ The prebuilt image already includes the module installer at `/mnt/repo-scripts/I
 lily-pwsh/
 ├── .github/
 │   └── workflows/
-│       └── publish.yml          # builds and publishes ghcr.io/revpixel/lily-pwsh:stable
+│       ├── publish.yml          # builds main and publishes ghcr.io/revpixel/lily-pwsh:stable
+│       └── publish-dev.yml      # builds dev and publishes ghcr.io/revpixel/lily-pwsh:dev
 ├── docs/
 │   ├── Install-AzureModules.md  # full documentation for the module installer
 │   └── rebuild-scripts-README.md

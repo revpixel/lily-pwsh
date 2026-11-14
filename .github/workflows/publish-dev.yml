@@ -1,0 +1,185 @@
+name: Build and Publish lily-pwsh Dev Image
+
+# Dev twin of publish.yml. Builds the dev branch into ghcr.io/revpixel/lily-pwsh:dev
+# so changes can be tried as a live image before they reach main and :stable.
+
+on:
+  push:
+    branches: [ dev ]
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Why this rebuild (e.g. "Testing Ubuntu 26.04")'
+        required: false
+        default: 'Manual dev rebuild'
+
+# One dev build at a time; a newer push waits for the running one instead of
+# racing it to move :dev.
+concurrency:
+  group: publish-dev
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    # Only ever publish :dev from the dev branch, even if this workflow is run
+    # by hand on another branch.
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write   # create the version tag and GitHub pre-release
+      packages: write   # push to GHCR
+
+    env:
+      IMAGE: ghcr.io/revpixel/lily-pwsh
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # Version = MAJOR.MINOR from the VERSION file + "-dev." + this workflow's run
+      # number, e.g. 1.0-dev.7. The suffix keeps dev builds from ever sharing a
+      # number with a stable build. Event text is passed through env, never pasted
+      # into the script, so quotes or backticks in it can't break the shell.
+      - name: Compute version
+        id: ver
+        env:
+          REASON: ${{ github.event.inputs.reason || github.event.head_commit.message }}
+        run: |
+          BASE=$(tr -d '[:space:]' < VERSION)
+          VERSION="${BASE}-dev.${{ github.run_number }}"
+          REASON_LINE="${REASON%%$'\n'*}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "reason=$REASON_LINE" >> "$GITHUB_OUTPUT"
+          echo "Building lily-pwsh v$VERSION ($GITHUB_EVENT_NAME: $REASON_LINE)"
+
+      - name: Sanity check GHCR secret
+        env:
+          GHCR_TOKEN: ${{ secrets.ghcr_namespace }}
+        run: |
+          if [ -z "$GHCR_TOKEN" ]; then
+            echo "SECRET_EMPTY"
+            exit 1
+          else
+            echo "SECRET_PRESENT"
+          fi
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: revpixel
+          password: ${{ secrets.ghcr_namespace }}
+
+      # Always start from a freshly pulled base image, like a hard rebuild.
+      - name: Build image
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          docker build --pull \
+            --label "org.opencontainers.image.version=$VERSION" \
+            --label "org.opencontainers.image.revision=$GITHUB_SHA" \
+            --label "org.opencontainers.image.created=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" \
+            -t "$IMAGE:$VERSION" \
+            -t "$IMAGE:dev" \
+            .
+
+      # Record what went into this build, for the release notes, and fail the
+      # build if the installer script is missing from the image.
+      - name: Read versions from the image
+        id: contents
+        run: |
+          TAG="$IMAGE:${{ steps.ver.outputs.version }}"
+          docker run --rm --entrypoint test "$TAG" -f /mnt/repo-scripts/Install-AzureModules.ps1
+          PWSH_VERSION=$(docker run --rm "$TAG" -NoProfile -NoLogo -Command '$PSVersionTable.PSVersion.ToString()')
+          OS_NAME=$(docker run --rm --entrypoint sh "$TAG" -c '. /etc/os-release && echo "$PRETTY_NAME"')
+          echo "pwsh=$PWSH_VERSION" >> "$GITHUB_OUTPUT"
+          echo "os=$OS_NAME" >> "$GITHUB_OUTPUT"
+          echo "PowerShell $PWSH_VERSION on $OS_NAME"
+
+      - name: Push image
+        run: |
+          docker push "$IMAGE:${{ steps.ver.outputs.version }}"
+          docker push "$IMAGE:dev"
+
+      # Create the version tag and a GitHub pre-release. It is never marked
+      # Latest, so the repo homepage keeps showing the newest stable build.
+      - name: Create GitHub pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.ver.outputs.version }}
+          REASON: ${{ steps.ver.outputs.reason }}
+          PWSH_VERSION: ${{ steps.contents.outputs.pwsh }}
+          OS_NAME: ${{ steps.contents.outputs.os }}
+        run: |
+          BUILT=$(date -u +%Y-%m-%d)
+          SHORT_SHA="${GITHUB_SHA::7}"
+
+          # Quoted heredoc: nothing inside is expanded by the shell; values are
+          # filled in afterwards, so backticks in the markdown are safe.
+          cat > release-notes.md <<'NOTES'
+          ## lily-pwsh v__VERSION__ (dev)
+
+          > ⚠️ **Dev build** from the `dev` branch, for testing. For everyday use, run `:stable`.
+
+          **PowerShell __PWSH__** on **__OS__**, built __BUILT__ from [`__SHA__`](__REPO_URL__/commit/__FULLSHA__).
+          Build reason: __REASON__
+
+          ### 🧪 Quick Run
+          This exact build:
+          ```
+          docker run --rm -it ghcr.io/revpixel/lily-pwsh:__VERSION__
+          ```
+          Always the newest dev build:
+          ```
+          docker run --rm -it ghcr.io/revpixel/lily-pwsh:dev
+          ```
+
+          ### 💾 Keep your files and modules between runs
+          ```
+          docker run --rm -it --init \
+            -v "$HOME/pwsh-data:/mnt/data" \
+            -v "$HOME/pwsh-data/modules:/root/.local/share/powershell/Modules" \
+            ghcr.io/revpixel/lily-pwsh:dev
+          ```
+          Then install the Azure / Microsoft 365 modules inside the container:
+          ```
+          /mnt/repo-scripts/Install-AzureModules.ps1
+          ```
+
+          ### 📦 Image tags
+          - `ghcr.io/revpixel/lily-pwsh:__VERSION__` (this build, never changes)
+          - `ghcr.io/revpixel/lily-pwsh:dev` (moves to every new dev build)
+          - `ghcr.io/revpixel/lily-pwsh:stable` (the main branch; not changed by this build)
+
+          ### ✅ Included
+          - __OS__ with current package updates as of __BUILT__
+          - PowerShell __PWSH__ from Microsoft's official package feed
+          - `Install-AzureModules.ps1` at `/mnt/repo-scripts/`
+          - No modules baked in, no apt cache
+
+          📘 [README on the dev branch](__REPO_URL__/blob/dev/README.md)
+
+          NOTES
+
+          # Fill in the values.
+          esc() { printf '%s' "$1" | sed -e 's/[\/&|]/\\&/g'; }
+          sed -i \
+            -e "s|__VERSION__|$(esc "$VERSION")|g" \
+            -e "s|__PWSH__|$(esc "$PWSH_VERSION")|g" \
+            -e "s|__OS__|$(esc "$OS_NAME")|g" \
+            -e "s|__BUILT__|$(esc "$BUILT")|g" \
+            -e "s|__REASON__|$(esc "$REASON")|g" \
+            -e "s|__SHA__|$(esc "$SHORT_SHA")|g" \
+            -e "s|__FULLSHA__|$(esc "$GITHUB_SHA")|g" \
+            -e "s|__REPO_URL__|$(esc "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY")|g" \
+            release-notes.md
+
+          # --prerelease and --latest=false keep dev builds off the repo homepage.
+          gh release create "v$VERSION" \
+            --target "$GITHUB_SHA" \
+            --title "lily-pwsh v$VERSION (dev)" \
+            --notes-file release-notes.md \
+            --generate-notes \
+            --prerelease \
+            --latest=false

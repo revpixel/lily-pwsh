@@ -83,6 +83,24 @@ gh workflow run publish.yml -f reason="Ubuntu security updates"
 
 Version numbers are the `MAJOR.MINOR` from [`VERSION`](../VERSION) plus the workflow run number, so every run gets a new version (for example `1.0.34`).
 
+### Dev builds
+
+The `dev` branch has its own workflow, [`publish-dev.yml`](../.github/workflows/publish-dev.yml), which works the same way with these differences:
+
+| | `publish.yml` | `publish-dev.yml` |
+|---|---|---|
+| Runs on push to | `main` | `dev` |
+| Moving tag | `:stable` | `:dev` |
+| Version format | `1.0.34` | `1.0-dev.7` |
+| GitHub Release | Marked **Latest** | Marked **Pre-release**, never Latest |
+| Base image | Fresh on the clean runner | Always pulled fresh (`--pull`) |
+
+Each workflow refuses to publish from any branch but its own, so a manual run on the wrong branch can never move `:stable` or `:dev`. To rebuild dev by hand:
+
+```bash
+gh workflow run publish-dev.yml --ref dev -f reason="Testing Ubuntu 26.04"
+```
+
 ## 🧩 Why two scripts?
 
 "Rebuild" means two different things:
