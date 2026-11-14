@@ -1,5 +1,5 @@
 ## lily-pwsh
-**A clean, minimal PowerShell container built on Ubuntu 24.04.**
+**A clean, minimal PowerShell container built on Ubuntu 26.04.**
 
 lily-pwsh is a sterile PowerShell environment for people who want a predictable shell without host contamination, leftover apt cache, or the bloat of a full Linux install. It's intentionally simple: build it, run it, throw it away. Every container started from the same image begins identical, and nothing leaks onto the host except the folders you choose to mount.
 
@@ -18,7 +18,7 @@ docker run --rm -it --init \
 The prebuilt image already includes the module installer at `/mnt/repo-scripts/Install-AzureModules.ps1`.
 
 ## ✨ Features
-**Minimal Ubuntu 24.04 base**
+**Minimal Ubuntu 26.04 base**
 - PowerShell from Microsoft's official package feed
 - No leftover apt cache or build debris
 - Starts directly in pwsh
@@ -32,6 +32,7 @@ The prebuilt image already includes the module installer at `/mnt/repo-scripts/I
 
 ## ⚠️ Prerequisites
 - Docker installed on a Linux host (see your distro's documentation or Docker's official install guide).
+- An x86-64 (amd64) host. Microsoft's Ubuntu 26.04 package feed has no arm64 PowerShell package yet, so the image can't be built on ARM machines such as a Raspberry Pi or an Apple Silicon Mac.
 - The repo cloned to `~/lily-pwsh`, which is where `scripts/run-pwsh.sh` expects it:
 ```
   git clone https://github.com/revpixel/lily-pwsh.git ~/lily-pwsh

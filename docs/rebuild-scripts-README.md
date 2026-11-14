@@ -41,7 +41,7 @@ The Dockerfile lives at the repo root, and the build copies `scripts/Install-Azu
 
 - Stops and removes a container **named** `lily-pwsh`, if there is one
 - Removes the `lily-pwsh` image
-- Pulls the newest `ubuntu:24.04` base image (`--pull`), the same fresh start the published image gets
+- Pulls the newest `ubuntu:26.04` base image (`--pull`), the same fresh start the published image gets
 - Rebuilds with `--no-cache`, so every step runs again, including `apt-get upgrade`, and you get current Ubuntu and PowerShell packages
 - Slower, but no stale layers
 
@@ -56,7 +56,7 @@ Every step ignores "not found" errors, so it's safe to run even when nothing exi
 
 | | `rebuild.sh` | `rebuild-hard.sh` |
 |---|---|---|
-| Base image | Local copy of `ubuntu:24.04` | Newest `ubuntu:24.04` (`--pull`) |
+| Base image | Local copy of `ubuntu:26.04` | Newest `ubuntu:26.04` (`--pull`) |
 | Build cache | Used | Ignored (`--no-cache`) |
 | Picks up Ubuntu / PowerShell updates | No | Yes |
 | Removes the old image | No | Yes |
