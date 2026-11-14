@@ -49,7 +49,9 @@ The major version number changed because the operating system under PowerShell c
 - **Update your checkout** (`git pull` in `~/lily-pwsh`). If you mount the repo's `scripts/` folder (as `run-pwsh.sh` does), it overrides the installer built into the image, so an old checkout means an old installer.
 - **On ARM hosts** (Raspberry Pi, Apple Silicon), stay on `1.0.38` until Microsoft publishes arm64 PowerShell for 26.04.
 
-Tested before release: PowerShell 7.7.0 on Ubuntu 26.04.1 LTS, with Az, Microsoft Graph and Graph Beta, Exchange Online, Microsoft Teams, PnP.PowerShell and Power BI all installing and loading.
+Tested before release: the current stable PowerShell on Ubuntu 26.04 LTS, with Az, Microsoft Graph and Graph Beta, Exchange Online, Microsoft Teams, PnP.PowerShell and Power BI all installing and loading.
+
+> **Which exact versions?** Every build installs the newest stable PowerShell and the newest Ubuntu 26.04 point release (26.04.1, 26.04.2, …) available at build time, so they move forward on their own. Each build's [release notes](https://github.com/revpixel/lily-pwsh/releases) record the exact versions it contains.
 
 ## ✨ Features
 **Minimal Ubuntu 26.04 base**
