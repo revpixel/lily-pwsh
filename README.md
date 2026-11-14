@@ -70,7 +70,9 @@ docker build -t lily-pwsh .
 > For the rebuild scripts (standard vs hard rebuild), see
 > [`docs/rebuild-scripts-README.md`](docs/rebuild-scripts-README.md).
 
-Each build pulls the current Ubuntu updates and the current stable PowerShell, so the image stays up to date. That also means two builds made weeks apart can differ. If you need byte-for-byte identical builds, pin the base image by digest and the `powershell` package version in the Dockerfile.
+A fresh build installs the current Ubuntu updates and the current stable PowerShell. Docker caches those steps, though, so a repeat `docker build` (or `rebuild.sh`) reuses the packages from the last build. To pick up updates, run `scripts/rebuild-hard.sh`, which rebuilds with `--no-cache`. The prebuilt GHCR image is always built from scratch.
+
+Because each fresh build gets whatever is current, two builds made weeks apart can differ. If you need byte-for-byte identical builds, pin the base image by digest and the `powershell` package version in the Dockerfile.
 
 ## ▶️ Running the Container
 **Basic interactive shell** (nothing persists):
