@@ -12,6 +12,9 @@ on:
 
 jobs:
   build-and-publish:
+    # Only ever publish :stable from main, even if this workflow is run by hand
+    # on another branch (dev has its own workflow, publish-dev.yml).
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     permissions:

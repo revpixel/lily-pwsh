@@ -1,5 +1,5 @@
 ## lily-pwsh
-**A clean, minimal PowerShell container built on Ubuntu 24.04.**
+**A clean, minimal PowerShell container built on Ubuntu 26.04.**
 
 lily-pwsh is a sterile PowerShell environment for people who want a predictable shell without host contamination, leftover apt cache, or the bloat of a full Linux install. It's intentionally simple: build it, run it, throw it away. Every container started from the same image begins identical, and nothing leaks onto the host except the folders you choose to mount.
 
@@ -17,8 +17,44 @@ docker run --rm -it --init \
 ```
 The prebuilt image already includes the module installer at `/mnt/repo-scripts/Install-AzureModules.ps1`.
 
+**Image tags**
+
+| Tag | Built from | Use it for |
+|---|---|---|
+| `:stable` | `main` | Everyday use |
+| `:dev` | `dev` | Trying upcoming changes before they reach `:stable` |
+| `:2.0.40`, `:2.0-dev.3`, … | One exact build | Pinning a version (never changes) |
+
+## 🆕 What's new in 2.0
+
+**lily-pwsh 2.0 moves the base image from Ubuntu 24.04 to Ubuntu 26.04 LTS.**
+
+The major version number changed because the operating system under PowerShell changed. A new Ubuntu LTS brings newer system libraries (ICU, OpenSSL, glibc), and those are what PowerShell and its modules load at runtime. Most scripts won't notice, but anything that depends on the OS underneath could behave differently. A major version makes that change visible, and lets you pin 1.x if you need to stay on 24.04.
+
+| | 1.x | 2.x |
+|---|---|---|
+| Base image | Ubuntu 24.04 LTS | Ubuntu 26.04 LTS |
+| PowerShell feed | Microsoft's Ubuntu 24.04 repo | Microsoft's Ubuntu 26.04 repo (native, no workaround) |
+| CPU architecture | amd64 | amd64 only (Microsoft has no arm64 PowerShell package for 26.04 yet) |
+
+2.0 also adds a dev channel: the `dev` branch publishes `:dev` images and pre-releases, so changes can be tested live before they reach `:stable`.
+
+**Upgrading from 1.x**
+
+- **`:stable` moves to 2.x automatically.** To stay on Ubuntu 24.04, pin the last 1.x build instead: `ghcr.io/revpixel/lily-pwsh:1.0.38`.
+- **Re-run the module installer once.** Modules in your persistent `~/pwsh-data/modules` folder carry over, but a fresh install makes sure each one is the current version and works on 26.04:
+  ```
+  /mnt/repo-scripts/Install-AzureModules.ps1
+  ```
+- **Update your checkout** (`git pull` in `~/lily-pwsh`). If you mount the repo's `scripts/` folder (as `run-pwsh.sh` does), it overrides the installer built into the image, so an old checkout means an old installer.
+- **On ARM hosts** (Raspberry Pi, Apple Silicon), stay on `1.0.38` until Microsoft publishes arm64 PowerShell for 26.04.
+
+Tested before release: the current stable PowerShell on Ubuntu 26.04 LTS, with Az, Microsoft Graph and Graph Beta, Exchange Online, Microsoft Teams, PnP.PowerShell and Power BI all installing and loading.
+
+> **Which exact versions?** Every build installs the newest stable PowerShell and the newest Ubuntu 26.04 point release (26.04.1, 26.04.2, …) available at build time, so they move forward on their own. Each build's [release notes](https://github.com/revpixel/lily-pwsh/releases) record the exact versions it contains.
+
 ## ✨ Features
-**Minimal Ubuntu 24.04 base**
+**Minimal Ubuntu 26.04 base**
 - PowerShell from Microsoft's official package feed
 - No leftover apt cache or build debris
 - Starts directly in pwsh
@@ -32,6 +68,7 @@ The prebuilt image already includes the module installer at `/mnt/repo-scripts/I
 
 ## ⚠️ Prerequisites
 - Docker installed on a Linux host (see your distro's documentation or Docker's official install guide).
+- An x86-64 (amd64) host. Microsoft's Ubuntu 26.04 package feed has no arm64 PowerShell package yet, so the image can't be built on ARM machines such as a Raspberry Pi or an Apple Silicon Mac.
 - The repo cloned to `~/lily-pwsh`, which is where `scripts/run-pwsh.sh` expects it:
 ```
   git clone https://github.com/revpixel/lily-pwsh.git ~/lily-pwsh
@@ -46,7 +83,8 @@ The prebuilt image already includes the module installer at `/mnt/repo-scripts/I
 lily-pwsh/
 ├── .github/
 │   └── workflows/
-│       └── publish.yml          # builds and publishes ghcr.io/revpixel/lily-pwsh:stable
+│       ├── publish.yml          # builds main and publishes ghcr.io/revpixel/lily-pwsh:stable
+│       └── publish-dev.yml      # builds dev and publishes ghcr.io/revpixel/lily-pwsh:dev
 ├── docs/
 │   ├── Install-AzureModules.md  # full documentation for the module installer
 │   └── rebuild-scripts-README.md

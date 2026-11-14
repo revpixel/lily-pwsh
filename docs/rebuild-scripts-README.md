@@ -41,7 +41,7 @@ The Dockerfile lives at the repo root, and the build copies `scripts/Install-Azu
 
 - Stops and removes a container **named** `lily-pwsh`, if there is one
 - Removes the `lily-pwsh` image
-- Pulls the newest `ubuntu:24.04` base image (`--pull`), the same fresh start the published image gets
+- Pulls the newest `ubuntu:26.04` base image (`--pull`), the same fresh start the published image gets
 - Rebuilds with `--no-cache`, so every step runs again, including `apt-get upgrade`, and you get current Ubuntu and PowerShell packages
 - Slower, but no stale layers
 
@@ -56,7 +56,7 @@ Every step ignores "not found" errors, so it's safe to run even when nothing exi
 
 | | `rebuild.sh` | `rebuild-hard.sh` |
 |---|---|---|
-| Base image | Local copy of `ubuntu:24.04` | Newest `ubuntu:24.04` (`--pull`) |
+| Base image | Local copy of `ubuntu:26.04` | Newest `ubuntu:26.04` (`--pull`) |
 | Build cache | Used | Ignored (`--no-cache`) |
 | Picks up Ubuntu / PowerShell updates | No | Yes |
 | Removes the old image | No | Yes |
@@ -81,7 +81,25 @@ It runs automatically on every push to `main`. To rebuild without a code change 
 gh workflow run publish.yml -f reason="Ubuntu security updates"
 ```
 
-Version numbers are the `MAJOR.MINOR` from [`VERSION`](../VERSION) plus the workflow run number, so every run gets a new version (for example `1.0.34`).
+Version numbers are the `MAJOR.MINOR` from [`VERSION`](../VERSION) plus the workflow run number, so every run gets a new version (for example `2.0.40`).
+
+### Dev builds
+
+The `dev` branch has its own workflow, [`publish-dev.yml`](../.github/workflows/publish-dev.yml), which works the same way with these differences:
+
+| | `publish.yml` | `publish-dev.yml` |
+|---|---|---|
+| Runs on push to | `main` | `dev` |
+| Moving tag | `:stable` | `:dev` |
+| Version format | `2.0.40` | `2.0-dev.7` |
+| GitHub Release | Marked **Latest** | Marked **Pre-release**, never Latest |
+| Base image | Fresh on the clean runner | Always pulled fresh (`--pull`) |
+
+Each workflow refuses to publish from any branch but its own, so a manual run on the wrong branch can never move `:stable` or `:dev`. To rebuild dev by hand:
+
+```bash
+gh workflow run publish-dev.yml --ref dev -f reason="Testing Ubuntu 26.04"
+```
 
 ## 🧩 Why two scripts?
 
