@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Questions and help
+    url: https://github.com/revpixel/lily-pwsh/discussions/categories/q-a
+    about: Ask "how do I…?" questions in Discussions, not issues.
+  - name: 💡 Ideas and general chat
+    url: https://github.com/revpixel/lily-pwsh/discussions
+    about: Share ideas, setups and anything else.
+  - name: 🐧 PowerShell on ARM / Ubuntu 26.04 (upstream)
+    url: https://github.com/PowerShell/PowerShell/issues/27388
+    about: No arm64 PowerShell for Ubuntu 26.04 yet. That's Microsoft's issue, tracked upstream.

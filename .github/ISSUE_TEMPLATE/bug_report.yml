@@ -1,0 +1,126 @@
+name: 🐛 Bug report
+description: Something in the lily-pwsh image, scripts or workflows doesn't work as expected.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem! A few details make it much quicker to track down.
+
+        **Before you start:**
+        - Questions and "how do I…?" belong in [Discussions → Q&A](https://github.com/revpixel/lily-pwsh/discussions/categories/q-a).
+        - On an **ARM** host (Raspberry Pi, Apple Silicon, Graviton)? Version 2.x needs amd64 for now. Use `:1.0.38`, and see [PowerShell/PowerShell#27388](https://github.com/PowerShell/PowerShell/issues/27388).
+        - If you mount the repo's `scripts/` folder, `git pull` first. An old checkout overrides the installer built into the image.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Where does the problem happen?
+      options:
+        - Container / image (startup, PowerShell, Ubuntu)
+        - Install-AzureModules.ps1 (module install, report or remove)
+        - Helper scripts (run-pwsh.sh, rebuild.sh, rebuild-hard.sh)
+        - GitHub Actions / published images
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Image tag or version
+      description: |
+        The tag you ran (`:stable`, `:dev`, `:2.0.39`…). To get the exact version, run:
+        `docker inspect -f '{{index .Config.Labels "org.opencontainers.image.version"}}' ghcr.io/revpixel/lily-pwsh:stable`
+        For a local build, write "local build" and the commit (`git log -1 --oneline`).
+      placeholder: "e.g. 2.0.39"
+    validations:
+      required: true
+
+  - type: textarea
+    id: command
+    attributes:
+      label: How did you start the container?
+      description: The full `docker run` command, or the script you used (for example `run-pwsh.sh`). Include any `-v` mounts.
+      render: bash
+      placeholder: docker run --rm -it --init -v "$HOME/pwsh-data:/mnt/data" ghcr.io/revpixel/lily-pwsh:stable
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: What you did, step by step.
+      placeholder: |
+        1. Start the container
+        2. Run /mnt/repo-scripts/Install-AzureModules.ps1
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened instead?
+      description: Include the error message. For module problems, the **Install Summary** table or `-Report` output helps a lot.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Output or logs
+      description: Paste any relevant output. It's shown as code automatically, so no backticks needed.
+      render: text
+
+  - type: dropdown
+    id: host_os
+    attributes:
+      label: Host OS
+      description: The machine running Docker.
+      options:
+        - Linux
+        - Windows (Docker Desktop / WSL)
+        - macOS
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: arch
+    attributes:
+      label: Host CPU architecture
+      description: Run `uname -m` on the host. x86_64 = amd64, aarch64 = arm64.
+      options:
+        - amd64 (x86_64)
+        - arm64 (aarch64)
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Screenshots, links, or anything else that might help.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched the existing issues and this hasn't been reported yet.
+          required: true
+        - label: I removed any passwords, tokens, tenant IDs or other secrets from the output above.
+          required: true

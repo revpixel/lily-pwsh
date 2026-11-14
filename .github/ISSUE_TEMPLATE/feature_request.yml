@@ -1,0 +1,73 @@
+name: ✨ Feature or module request
+description: Suggest an improvement, or a PowerShell module to add to the installer.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea! For open-ended brainstorming, [Discussions → Ideas](https://github.com/revpixel/lily-pwsh/discussions/categories/ideas) is a good place to start. Use this form when you have something specific in mind.
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: What kind of request is this?
+      options:
+        - Add a module to Install-AzureModules.ps1
+        - Change to the container image
+        - Change to the helper scripts
+        - Change to GitHub Actions / published images
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: What are you trying to do, and what gets in the way today?
+      placeholder: "I manage ... and every time I start the container I have to ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like to happen?
+      description: Describe the change. For a module request, include the module name and a link to its PowerShell Gallery page.
+      placeholder: |
+        Add `ModuleName` (https://www.powershellgallery.com/packages/ModuleName) to the installer.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: module_host
+    attributes:
+      label: For module requests, where does the module run?
+      description: The installer only installs a module on the PowerShell edition it supports.
+      options:
+        - Not a module request
+        - PowerShell 7 (cross-platform, works in the container)
+        - Windows PowerShell 5.1 only
+        - Not sure
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      description: Workarounds you use today, or other ways to solve it.
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Links, examples, or screenshots.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched the existing issues and discussions for this request.
+          required: true

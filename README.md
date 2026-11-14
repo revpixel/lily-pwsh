@@ -82,6 +82,7 @@ Tested before release: the current stable PowerShell on Ubuntu 26.04 LTS, with A
 ```
 lily-pwsh/
 ├── .github/
+│   ├── ISSUE_TEMPLATE/          # bug report and feature request forms
 │   └── workflows/
 │       ├── publish.yml          # builds main and publishes ghcr.io/revpixel/lily-pwsh:stable
 │       └── publish-dev.yml      # builds dev and publishes ghcr.io/revpixel/lily-pwsh:dev
