@@ -5,7 +5,7 @@ Two scripts in [`scripts/`](../scripts) rebuild the local `lily-pwsh` image:
 | Script | What it does | Use it for |
 |---|---|---|
 | [`rebuild.sh`](../scripts/rebuild.sh) | Cached rebuild. Fast and non-destructive. | Everyday changes to the Dockerfile or scripts |
-| [`rebuild-hard.sh`](../scripts/rebuild-hard.sh) | Removes the old image and rebuilds with `--no-cache` | A clean slate: stale layers, package updates, odd behavior |
+| [`rebuild-hard.sh`](../scripts/rebuild-hard.sh) | Removes the old image, pulls a fresh Ubuntu base and rebuilds with `--no-cache` | A clean slate: stale layers, package updates, odd behavior |
 
 Both scripts `cd` to the repo root first, so you can run them from anywhere:
 
@@ -41,6 +41,7 @@ The Dockerfile lives at the repo root, and the build copies `scripts/Install-Azu
 
 - Stops and removes a container **named** `lily-pwsh`, if there is one
 - Removes the `lily-pwsh` image
+- Pulls the newest `ubuntu:24.04` base image (`--pull`), the same fresh start the published image gets
 - Rebuilds with `--no-cache`, so every step runs again, including `apt-get upgrade`, and you get current Ubuntu and PowerShell packages
 - Slower, but no stale layers
 
@@ -51,16 +52,11 @@ Every step ignores "not found" errors, so it's safe to run even when nothing exi
 - **Exit any open lily-pwsh shells.** Containers started by `run-pwsh.sh` or `docker run --rm` get random names, so the script's `docker stop lily-pwsh` doesn't find them. If one is still running, the old image can't be removed. The build still succeeds, but the old image is left behind untagged. Run `docker image prune` afterwards to clean it up.
 - **Your data and modules are safe.** They live in the host folders under `~/pwsh-data`, not in the image.
 
-**Tip:** `--no-cache` reruns the build steps, but it still starts from your locally cached `ubuntu:24.04` base image. To start from the newest base image as well, pull it first:
-
-```bash
-docker pull ubuntu:24.04 && ~/lily-pwsh/scripts/rebuild-hard.sh
-```
-
 ## 🧭 Which one?
 
 | | `rebuild.sh` | `rebuild-hard.sh` |
 |---|---|---|
+| Base image | Local copy of `ubuntu:24.04` | Newest `ubuntu:24.04` (`--pull`) |
 | Build cache | Used | Ignored (`--no-cache`) |
 | Picks up Ubuntu / PowerShell updates | No | Yes |
 | Removes the old image | No | Yes |
