@@ -110,7 +110,8 @@ type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh <your-linux-user>@<your-linux-ho
 ```
 After that, Windows Terminal opens the container with no prompts. See [`examples/run-interactive.md`](examples/run-interactive.md) for a complete Windows Terminal profile.
 
-<img width="1115" height="628" alt="image" src="https://github.com/user-attachments/assets/5835b6a1-fa1a-453f-aaf1-c1da5fa029f3" />
+<img width="1115" height="628" alt="Screenshot 2026-11-14 120602" src="https://github.com/user-attachments/assets/843f6694-ce51-4e9c-8fff-bf4ad2adeb18" />
+
 
 ## 🧰 Installing PowerShell Modules
 No modules are baked into the image. Install them inside the container with the included script:
@@ -142,7 +143,8 @@ With the modules folder mounted (as `run-pwsh.sh` does), the modules stay instal
 **Legacy modules:** AzureAD, AzureADPreview and MSOnline are deprecated and being retired by Microsoft in favor of Microsoft Graph PowerShell. The script never installs them; if it finds them, `-Report` flags them and `-Remove -Section Legacy` removes them.
 
 The same script also runs on Windows, under both PowerShell 7 and Windows PowerShell 5.1, and handles the modules that belong to each. That makes it useful outside this container too.
-<img width="1115" height="1061" alt="image" src="https://github.com/user-attachments/assets/c1e9bdac-71dd-45ce-9cd6-edffd7b29370" />
+<img width="1115" height="1061" alt="image" src="https://github.com/user-attachments/assets/963c19f7-55f4-49e2-a5dc-2ad3adaa77f2" />
+
 
 **📘 Full documentation:** host profiles, every parameter, scopes, exit codes and limitations are covered in
 👉 [`docs/Install-AzureModules.md`](docs/Install-AzureModules.md)
