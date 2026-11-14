@@ -18,8 +18,9 @@ docker rm lily-pwsh 2>/dev/null || true
 # Remove the old image
 docker rmi lily-pwsh 2>/dev/null || true
 
-# Build fresh with no cache
-docker build --no-cache -t lily-pwsh .
+# Build fresh: --pull fetches the newest ubuntu:24.04 base image (the same
+# fresh start the published GHCR build gets), --no-cache reruns every step.
+docker build --pull --no-cache -t lily-pwsh .
 
 echo "========================================="
 echo "  lily-pwsh hard rebuild complete."
