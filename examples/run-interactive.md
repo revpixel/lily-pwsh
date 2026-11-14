@@ -125,7 +125,7 @@ Install the Azure / Microsoft 365 modules:
 /mnt/repo-scripts/Install-AzureModules.ps1
 ```
 
-Without the modules mount, they're gone when the container exits. With it, they're installed once and kept. Full options are in the [installer docs](../docs/).
+Without the modules mount, they're gone when the container exits. With it, they're installed once and kept. Full options are in the [installer docs](../docs/Install-AzureModules.md).
 
 Type `exit` to leave. With `--rm`, the container is deleted at that point.
 
